@@ -1,0 +1,64 @@
+# Environment Variables (NEVER push API keys!)
+.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyz
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual Environment
+venv/
+env/
+.venv/
+ENV/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.code-workspace
+.qodo/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# PDF outputs (generated files)
+*.pdf
+trip_itinerary.pdf
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Misc
+*.bak
+*.tmp
+*.swp
+
+
+echo .env > .gitignore
+echo __pycache__/ >> .gitignore
+echo *.pyc >> .gitignore
