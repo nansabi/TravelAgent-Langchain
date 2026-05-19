@@ -1,0 +1,173 @@
+[
+  {
+    "hotel_id": "H001",
+    "name": "The Capital Suites",
+    "city": "Delhi",
+    "price_per_night_inr": 6500,
+    "rating": 4.4,
+    "amenities": ["wifi", "breakfast", "airport_transfer", "gym"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H002",
+    "name": "Marine Bay Hotel",
+    "city": "Mumbai",
+    "price_per_night_inr": 7200,
+    "rating": 4.3,
+    "amenities": ["wifi", "pool", "restaurant", "parking"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H003",
+    "name": "Goa Beach Resort",
+    "city": "Goa",
+    "price_per_night_inr": 4800,
+    "rating": 4.1,
+    "amenities": ["beach_access", "spa", "breakfast"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H004",
+    "name": "Heritage Haveli",
+    "city": "Jaipur",
+    "price_per_night_inr": 9200,
+    "rating": 4.7,
+    "amenities": ["wifi", "heritage_decor", "guided_tours"],
+    "type": "luxury"
+  },
+  {
+    "hotel_id": "H005",
+    "name": "Backpacker Lodge",
+    "city": "Kerala",
+    "price_per_night_inr": 1200,
+    "rating": 3.8,
+    "amenities": ["wifi", "shared_kitchen"],
+    "type": "budget"
+  },
+  {
+    "hotel_id": "H006",
+    "name": "Hillside Inn",
+    "city": "Manali",
+    "price_per_night_inr": 3500,
+    "rating": 4.0,
+    "amenities": ["wifi", "hot_water", "lake_view"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H007",
+    "name": "Taj Agra Resort",
+    "city": "Agra",
+    "price_per_night_inr": 11000,
+    "rating": 4.8,
+    "amenities": ["pool", "spa", "airport_transfer", "restaurant"],
+    "type": "luxury"
+  },
+  {
+    "hotel_id": "H008",
+    "name": "Central Stay",
+    "city": "Delhi",
+    "price_per_night_inr": 2800,
+    "rating": 3.9,
+    "amenities": ["wifi", "breakfast"],
+    "type": "budget"
+  },
+  {
+    "hotel_id": "H009",
+    "name": "Gateway Suites",
+    "city": "Mumbai",
+    "price_per_night_inr": 9500,
+    "rating": 4.5,
+    "amenities": ["wifi", "gym", "valet_parking"],
+    "type": "luxury"
+  },
+  {
+    "hotel_id": "H010",
+    "name": "Seaside Comfort",
+    "city": "Goa",
+    "price_per_night_inr": 6000,
+    "rating": 4.2,
+    "amenities": ["beach_access", "bar", "breakfast"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H011",
+    "name": "Pink City Hotel",
+    "city": "Jaipur",
+    "price_per_night_inr": 4200,
+    "rating": 4.0,
+    "amenities": ["wifi", "rooftop_restaurant"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H012",
+    "name": "Backwater Bungalows",
+    "city": "Kerala",
+    "price_per_night_inr": 7000,
+    "rating": 4.6,
+    "amenities": ["boat_rides", "spa", "breakfast"],
+    "type": "luxury"
+  },
+  {
+    "hotel_id": "H013",
+    "name": "Snowcap Lodge",
+    "city": "Manali",
+    "price_per_night_inr": 5000,
+    "rating": 4.3,
+    "amenities": ["heated_rooms", "wifi", "mountain_view"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H014",
+    "name": "Budget Inn Agra",
+    "city": "Agra",
+    "price_per_night_inr": 1500,
+    "rating": 3.6,
+    "amenities": ["wifi", "breakfast"],
+    "type": "budget"
+  },
+  {
+    "hotel_id": "H015",
+    "name": "Riverside Retreat",
+    "city": "Kerala",
+    "price_per_night_inr": 5400,
+    "rating": 4.2,
+    "amenities": ["river_view", "boat_rides", "breakfast"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H016",
+    "name": "Crown Plaza Coimbatore",
+    "city": "Coimbatore",
+    "price_per_night_inr": 4500,
+    "rating": 4.2,
+    "amenities": ["wifi", "gym", "restaurant", "parking"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H017",
+    "name": "Budget Stay Coimbatore",
+    "city": "Coimbatore",
+    "price_per_night_inr": 1800,
+    "rating": 3.7,
+    "amenities": ["wifi", "breakfast"],
+    "type": "budget"
+  },
+  {
+    "hotel_id": "H018",
+    "name": "Marina Pearl Hotel",
+    "city": "Chennai",
+    "price_per_night_inr": 5200,
+    "rating": 4.3,
+    "amenities": ["beach_view", "pool", "restaurant", "spa"],
+    "type": "standard"
+  },
+  {
+    "hotel_id": "H019",
+    "name": "Budget Comfort Chennai",
+    "city": "Chennai",
+    "price_per_night_inr": 2100,
+    "rating": 3.8,
+    "amenities": ["wifi", "breakfast", "ac"],
+    "type": "budget"
+  }
+]

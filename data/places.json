@@ -1,0 +1,592 @@
+[
+  {
+    "place_id": "P001",
+    "name": "Red Fort",
+    "city": "Delhi",
+    "category": "heritage",
+    "rating": 4.5,
+    "entry_fee_inr": 35,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "A historic Mughal fort with expansive courtyards and museums."
+  },
+  {
+    "place_id": "P002",
+    "name": "Qutub Minar",
+    "city": "Delhi",
+    "category": "heritage",
+    "rating": 4.4,
+    "entry_fee_inr": 40,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Tall minaret and historical complex with Indo-Islamic architecture."
+  },
+  {
+    "place_id": "P003",
+    "name": "Chandni Chowk",
+    "city": "Delhi",
+    "category": "food",
+    "rating": 4.4,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Bustling old-market lane famous for street food and markets."
+  },
+  {
+    "place_id": "P004",
+    "name": "Jama Masjid",
+    "city": "Delhi",
+    "category": "heritage",
+    "rating": 4.3,
+    "entry_fee_inr": 25,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "One of India's largest mosques with grand courtyards."
+  },
+  {
+    "place_id": "P005",
+    "name": "Humayun's Tomb",
+    "city": "Delhi",
+    "category": "heritage",
+    "rating": 4.5,
+    "entry_fee_inr": 40,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "UNESCO World Heritage Site and architectural precursor to the Taj Mahal."
+  },
+  {
+    "place_id": "P006",
+    "name": "Gateway of India",
+    "city": "Mumbai",
+    "category": "heritage",
+    "rating": 4.3,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Iconic waterfront arch and popular ferry departures."
+  },
+  {
+    "place_id": "P007",
+    "name": "Marine Drive Promenade",
+    "city": "Mumbai",
+    "category": "nature",
+    "rating": 4.2,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Sunset promenade lined with street-food stalls and cafes."
+  },
+  {
+    "place_id": "P008",
+    "name": "Colaba Causeway",
+    "city": "Mumbai",
+    "category": "food",
+    "rating": 4.1,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Shopping street with cafes, antique shops, and local eateries."
+  },
+  {
+    "place_id": "P009",
+    "name": "Elephanta Caves",
+    "city": "Mumbai",
+    "category": "heritage",
+    "rating": 4.3,
+    "entry_fee_inr": 40,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Ancient rock-cut cave temples with stunning Shiva sculptures on an island."
+  },
+  {
+    "place_id": "P010",
+    "name": "Baga Beach",
+    "city": "Goa",
+    "category": "beach",
+    "rating": 4.4,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Mar",
+    "description": "Lively beach known for water sports and nightlife."
+  },
+  {
+    "place_id": "P011",
+    "name": "Dudhsagar Falls",
+    "city": "Goa",
+    "category": "nature",
+    "rating": 4.6,
+    "entry_fee_inr": 100,
+    "best_time_to_visit": "Oct-May",
+    "description": "Powerful multi-tiered waterfall on the Goa-Karnataka border."
+  },
+  {
+    "place_id": "P012",
+    "name": "Fort Aguada",
+    "city": "Goa",
+    "category": "heritage",
+    "rating": 4.1,
+    "entry_fee_inr": 30,
+    "best_time_to_visit": "Nov-Mar",
+    "description": "17th-century Portuguese fort overlooking the Arabian Sea."
+  },
+  {
+    "place_id": "P013",
+    "name": "Calangute Beach",
+    "city": "Goa",
+    "category": "beach",
+    "rating": 4.2,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Mar",
+    "description": "Goa's largest and most popular beach with shacks, water sports, and vibrant crowds."
+  },
+  {
+    "place_id": "P014",
+    "name": "Hawa Mahal",
+    "city": "Jaipur",
+    "category": "heritage",
+    "rating": 4.2,
+    "entry_fee_inr": 50,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Distinctive pink sandstone palace with ornate windows."
+  },
+  {
+    "place_id": "P015",
+    "name": "Amer Fort",
+    "city": "Jaipur",
+    "category": "heritage",
+    "rating": 4.5,
+    "entry_fee_inr": 100,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Hilltop fort with palaces, courtyards, and panoramic views."
+  },
+  {
+    "place_id": "P016",
+    "name": "City Palace Jaipur",
+    "city": "Jaipur",
+    "category": "heritage",
+    "rating": 4.4,
+    "entry_fee_inr": 200,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Royal complex of palaces, courtyards, and museums in the heart of Jaipur."
+  },
+  {
+    "place_id": "P017",
+    "name": "Jantar Mantar",
+    "city": "Jaipur",
+    "category": "heritage",
+    "rating": 4.1,
+    "entry_fee_inr": 50,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "UNESCO-listed astronomical observatory with giant stone instruments."
+  },
+  {
+    "place_id": "P018",
+    "name": "Alleppey Backwaters",
+    "city": "Kerala",
+    "category": "nature",
+    "rating": 4.7,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Sep-Mar",
+    "description": "Serene canals and houseboat cruises through palm-fringed lagoons."
+  },
+  {
+    "place_id": "P019",
+    "name": "Spice Trail Plantation",
+    "city": "Kerala",
+    "category": "nature",
+    "rating": 4.3,
+    "entry_fee_inr": 150,
+    "best_time_to_visit": "Sep-Mar",
+    "description": "Guided spice plantation walks with tasting sessions."
+  },
+  {
+    "place_id": "P020",
+    "name": "Periyar Wildlife Sanctuary",
+    "city": "Kerala",
+    "category": "nature",
+    "rating": 4.5,
+    "entry_fee_inr": 300,
+    "best_time_to_visit": "Sep-Apr",
+    "description": "Scenic tiger reserve with elephant sightings and boat safaris on Periyar Lake."
+  },
+  {
+    "place_id": "P021",
+    "name": "Munnar Tea Gardens",
+    "city": "Kerala",
+    "category": "nature",
+    "rating": 4.6,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Sep-Mar",
+    "description": "Rolling hills blanketed with lush tea estates and misty valleys."
+  },
+  {
+    "place_id": "P022",
+    "name": "Hadimba Temple",
+    "city": "Manali",
+    "category": "heritage",
+    "rating": 4.1,
+    "entry_fee_inr": 10,
+    "best_time_to_visit": "Mar-Jun, Sep-Nov",
+    "description": "Ancient wooden temple set in tranquil cedar forest."
+  },
+  {
+    "place_id": "P023",
+    "name": "Rohtang Pass",
+    "city": "Manali",
+    "category": "adventure",
+    "rating": 4.6,
+    "entry_fee_inr": 550,
+    "best_time_to_visit": "May-Oct",
+    "description": "High-altitude mountain pass offering snow activities and breathtaking Himalayan views."
+  },
+  {
+    "place_id": "P024",
+    "name": "Kullu River Rafting",
+    "city": "Manali",
+    "category": "adventure",
+    "rating": 4.5,
+    "entry_fee_inr": 400,
+    "best_time_to_visit": "Apr-Jun, Sep-Oct",
+    "description": "White-water rafting and river-side camping experiences on the Beas River."
+  },
+  {
+    "place_id": "P025",
+    "name": "Solang Valley",
+    "city": "Manali",
+    "category": "adventure",
+    "rating": 4.4,
+    "entry_fee_inr": 200,
+    "best_time_to_visit": "Dec-Feb, May-Jun",
+    "description": "Popular ski resort valley with paragliding, zorbing, and snow activities."
+  },
+  {
+    "place_id": "P026",
+    "name": "Taj Mahal",
+    "city": "Agra",
+    "category": "heritage",
+    "rating": 4.9,
+    "entry_fee_inr": 1100,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "World-famous white marble mausoleum and UNESCO World Heritage Site."
+  },
+  {
+    "place_id": "P027",
+    "name": "Agra Fort",
+    "city": "Agra",
+    "category": "heritage",
+    "rating": 4.4,
+    "entry_fee_inr": 550,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Massive 16th-century Mughal fort and UNESCO site with palaces and mosques."
+  },
+  {
+    "place_id": "P028",
+    "name": "Itmad-ud-Daulah (Baby Taj)",
+    "city": "Agra",
+    "category": "heritage",
+    "rating": 4.2,
+    "entry_fee_inr": 250,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Fine marble tomb often described as a draft of the Taj Mahal."
+  },
+  {
+    "place_id": "P029",
+    "name": "Mehtab Bagh",
+    "city": "Agra",
+    "category": "nature",
+    "rating": 4.3,
+    "entry_fee_inr": 200,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Moonlit garden across the Yamuna offering the best sunset view of the Taj Mahal."
+  },
+  {
+    "place_id": "P030",
+    "name": "Marudamalai Temple",
+    "city": "Coimbatore",
+    "category": "heritage",
+    "rating": 4.4,
+    "entry_fee_inr": 10,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Ancient hilltop temple with panoramic views of Coimbatore city."
+  },
+  {
+    "place_id": "P031",
+    "name": "Black Thunder Theme Park",
+    "city": "Coimbatore",
+    "category": "adventure",
+    "rating": 4.2,
+    "entry_fee_inr": 300,
+    "best_time_to_visit": "Oct-May",
+    "description": "Amusement park with water rides, roller coasters, and family attractions."
+  },
+  {
+    "place_id": "P032",
+    "name": "VOC Park & Zoo",
+    "city": "Coimbatore",
+    "category": "nature",
+    "rating": 4.0,
+    "entry_fee_inr": 30,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Green park with walking trails, gardens, and a small zoo."
+  },
+  {
+    "place_id": "P033",
+    "name": "Dhyanalinga Temple",
+    "city": "Coimbatore",
+    "category": "heritage",
+    "rating": 4.6,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Year-round",
+    "description": "Serene meditation temple and spiritual centre by the Isha Foundation."
+  },
+  {
+    "place_id": "P034",
+    "name": "Marina Beach",
+    "city": "Chennai",
+    "category": "beach",
+    "rating": 4.3,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "India's longest beach with golden sands, vibrant atmosphere, and street food."
+  },
+  {
+    "place_id": "P035",
+    "name": "Kapaleeshwarar Temple",
+    "city": "Chennai",
+    "category": "heritage",
+    "rating": 4.4,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Iconic 7th-century Dravidian temple with stunning architecture and artwork."
+  },
+  {
+    "place_id": "P036",
+    "name": "Government Museum",
+    "city": "Chennai",
+    "category": "heritage",
+    "rating": 4.1,
+    "entry_fee_inr": 50,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "One of India's oldest museums with ancient bronze sculptures and artifacts."
+  },
+  {
+    "place_id": "P037",
+    "name": "Elliot's Beach",
+    "city": "Chennai",
+    "category": "beach",
+    "rating": 4.2,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Calm, scenic beach ideal for relaxed walks and picnics away from the crowds."
+  },
+  {
+    "place_id": "P038",
+    "name": "Fort St. George",
+    "city": "Chennai",
+    "category": "heritage",
+    "rating": 4.0,
+    "entry_fee_inr": 25,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "India's first British fort, housing a museum of colonial-era artifacts."
+  },
+  {
+    "place_id": "P039",
+    "name": "Tiruchendur Murugan Temple",
+    "city": "Thoothukudi",
+    "category": "heritage",
+    "rating": 4.7,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "One of the six abodes of Lord Murugan, built into seaside cliffs with stunning ocean views."
+  },
+  {
+    "place_id": "P040",
+    "name": "Thoothukudi Seashore",
+    "city": "Thoothukudi",
+    "category": "beach",
+    "rating": 4.0,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Peaceful coastal stretch known for pearl fishing heritage and scenic sunsets."
+  },
+  {
+    "place_id": "P041",
+    "name": "Vivekananda Memorial Rock",
+    "city": "Thoothukudi",
+    "category": "heritage",
+    "rating": 4.6,
+    "entry_fee_inr": 50,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Iconic memorial on a rocky island at India's southernmost tip where three seas meet."
+  },
+  {
+    "place_id": "P042",
+    "name": "Charminar",
+    "city": "Hyderabad",
+    "category": "heritage",
+    "rating": 4.5,
+    "entry_fee_inr": 25,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Iconic 16th-century mosque and monument at the heart of the old city."
+  },
+  {
+    "place_id": "P043",
+    "name": "Golconda Fort",
+    "city": "Hyderabad",
+    "category": "heritage",
+    "rating": 4.4,
+    "entry_fee_inr": 15,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Impressive medieval fort complex with acoustic wonders and panoramic views."
+  },
+  {
+    "place_id": "P044",
+    "name": "Hussain Sagar Lake",
+    "city": "Hyderabad",
+    "category": "nature",
+    "rating": 4.1,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Large heart-shaped lake with a giant Buddha statue on a central island."
+  },
+  {
+    "place_id": "P045",
+    "name": "Victoria Memorial",
+    "city": "Kolkata",
+    "category": "heritage",
+    "rating": 4.6,
+    "entry_fee_inr": 30,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Magnificent white marble colonial monument set in sprawling manicured gardens."
+  },
+  {
+    "place_id": "P046",
+    "name": "Howrah Bridge",
+    "city": "Kolkata",
+    "category": "heritage",
+    "rating": 4.4,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Iconic cantilever bridge over the Hooghly River and symbol of Kolkata."
+  },
+  {
+    "place_id": "P047",
+    "name": "Dakshineswar Kali Temple",
+    "city": "Kolkata",
+    "category": "heritage",
+    "rating": 4.5,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Famous riverside Hindu temple associated with the mystic Ramakrishna Paramahamsa."
+  },
+  {
+    "place_id": "P048",
+    "name": "Shaniwar Wada Fort",
+    "city": "Pune",
+    "category": "heritage",
+    "rating": 4.2,
+    "entry_fee_inr": 25,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Historic Peshwa-era fortification with massive bastions and lush gardens."
+  },
+  {
+    "place_id": "P049",
+    "name": "Aga Khan Palace",
+    "city": "Pune",
+    "category": "heritage",
+    "rating": 4.3,
+    "entry_fee_inr": 25,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Beautiful palace with Indo-Islamic arches, significant as a Gandhi memorial site."
+  },
+  {
+    "place_id": "P050",
+    "name": "Sinhagad Fort",
+    "city": "Pune",
+    "category": "adventure",
+    "rating": 4.4,
+    "entry_fee_inr": 25,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Hilltop fort with a challenging trek, stunning valley views, and historical importance."
+  },
+  {
+    "place_id": "P051",
+    "name": "Kashi Vishwanath Temple",
+    "city": "Varanasi",
+    "category": "heritage",
+    "rating": 4.7,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "One of Hinduism's most sacred temples, dedicated to Lord Shiva on the Ganges."
+  },
+  {
+    "place_id": "P052",
+    "name": "Dashashwamedh Ghat",
+    "city": "Varanasi",
+    "category": "heritage",
+    "rating": 4.8,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "The main ghat on the Ganges, renowned for its spectacular nightly Ganga Aarti ceremony."
+  },
+  {
+    "place_id": "P053",
+    "name": "Sarnath",
+    "city": "Varanasi",
+    "category": "heritage",
+    "rating": 4.5,
+    "entry_fee_inr": 40,
+    "best_time_to_visit": "Oct-Mar",
+    "description": "Sacred Buddhist site where the Buddha gave his first sermon, with ancient stupas and a museum."
+  },
+  {
+    "place_id": "P054",
+    "name": "Fort Kochi Beach",
+    "city": "Kochi",
+    "category": "beach",
+    "rating": 4.3,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Charming waterfront with iconic Chinese fishing nets, colonial architecture, and fresh seafood."
+  },
+  {
+    "place_id": "P055",
+    "name": "Mattancherry Palace",
+    "city": "Kochi",
+    "category": "heritage",
+    "rating": 4.2,
+    "entry_fee_inr": 10,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "16th-century Dutch palace with rare Kerala murals depicting scenes from the Ramayana."
+  },
+  {
+    "place_id": "P056",
+    "name": "Jew Town Spice Market",
+    "city": "Kochi",
+    "category": "food",
+    "rating": 4.3,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Nov-Feb",
+    "description": "Historic marketplace famous for spices, antiques, and colonial-era synagogue."
+  },
+  {
+    "place_id": "P057",
+    "name": "Cubbon Park",
+    "city": "Bangalore",
+    "category": "nature",
+    "rating": 4.3,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Expansive 300-acre green lung of the city with heritage buildings and walking trails."
+  },
+  {
+    "place_id": "P058",
+    "name": "Bangalore Palace",
+    "city": "Bangalore",
+    "category": "heritage",
+    "rating": 4.1,
+    "entry_fee_inr": 230,
+    "best_time_to_visit": "Oct-Feb",
+    "description": "Tudor-style royal palace with wood-panelled interiors, paintings, and sprawling grounds."
+  },
+  {
+    "place_id": "P059",
+    "name": "ISKCON Temple Bangalore",
+    "city": "Bangalore",
+    "category": "heritage",
+    "rating": 4.5,
+    "entry_fee_inr": 0,
+    "best_time_to_visit": "Year-round",
+    "description": "One of the largest ISKCON temples globally with stunning architecture and serene atmosphere."
+  }
+]

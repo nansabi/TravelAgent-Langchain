@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TRIPS — AI Travel Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  /* ============================
+     CSS VARIABLES & RESET
+  ============================= */
+  :root {
+    --brown:    #810B38;
+    --cream:    #F1E2D1;
+    --sand:     #DCC3AA;
+    --dark:     #541A1A;
+    --text:     #2A1010;
+    --muted:    #7A5C5C;
+    --white:    #FDFAF7;
+    --gold:     #C9943A;
+    --gold-lt:  #E8C97A;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ============================
+     PAGES
+  ============================= */
+  .page { display: none; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ============================
+     NAV
+  ============================= */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 5vw;
+    background: rgba(253, 250, 247, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(129,11,56,0.08);
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 30px rgba(84,26,26,0.10); }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 0.6rem; cursor: pointer;
+    text-decoration: none;
+  }
+  .nav-logo svg { width: 36px; height: 36px; }
+  .nav-logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem; font-weight: 900;
+    color: var(--dark); letter-spacing: 0.12em;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.88rem; font-weight: 500;
+    color: var(--text); text-decoration: none; letter-spacing: 0.04em;
+    transition: color 0.2s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -3px; left: 0; right: 0; height: 1px;
+    background: var(--brown); transform: scaleX(0); transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--brown); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+  .nav-links a.active { color: var(--brown); }
+
+  .nav-cta {
+    background: var(--brown); color: white !important;
+    padding: 0.55rem 1.4rem; border-radius: 2px;
+    font-size: 0.82rem !important; letter-spacing: 0.1em !important;
+    text-transform: uppercase;
+  }
+  .nav-cta::after { display: none !important; }
+  .nav-cta:hover { background: var(--dark) !important; color: white !important; }
+
+  /* ============================
+     HERO
+  ============================= */
+  .hero {
+    position: relative; height: 100vh; min-height: 640px;
+    display: flex; align-items: flex-end;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(to right, rgba(84,26,26,0.72) 0%, rgba(84,26,26,0.25) 60%, transparent 100%),
+      url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1800&q=80') center/cover no-repeat;
+  }
+
+  /* Grain overlay */
+  .hero-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; opacity: 0.4;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 0 5vw 7rem;
+    max-width: 680px;
+  }
+
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 0.8rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero-eyebrow-line {
+    width: 40px; height: 1px; background: var(--gold-lt);
+  }
+  .hero-eyebrow span {
+    font-size: 0.78rem; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-lt);
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-weight: 900; line-height: 1.05;
+    color: white;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--gold-lt);
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; font-style: italic;
+    color: rgba(241,226,209,0.85);
+    line-height: 1.7; margin-bottom: 2.5rem;
+    max-width: 440px;
+  }
+
+  .hero-actions {
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--brown); color: white;
+    padding: 0.9rem 2.2rem; border: none;
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 2px;
+  }
+  .btn-primary:hover { background: var(--dark); transform: translateY(-2px); }
+
+  .btn-ghost {
+    background: transparent; color: var(--cream);
+    padding: 0.9rem 2.2rem;
+    border: 1px solid rgba(241,226,209,0.4);
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; transition: all 0.3s;
+    font-family: 'DM Sans', sans-serif;
+    border-radius: 2px;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .btn-ghost:hover {
+    background: rgba(241,226,209,0.1);
+    border-color: rgba(241,226,209,0.7);
+  }
+
+  .hero-scroll {
+    position: absolute; bottom: 2rem; right: 5vw;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: rgba(241,226,209,0.5); font-size: 0.7rem; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+  .hero-scroll svg { width: 20px; opacity: 0.5; }
+
+  /* ============================
+     STATS BAR
+  ============================= */
+  .stats-bar {
+    background: var(--dark);
+    display: flex; justify-content: center;
+    gap: 0;
+  }
+  .stat-item {
+    flex: 1; max-width: 260px;
+    padding: 2rem 2rem;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.07);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 700;
+    color: var(--gold-lt);
+    display: block;
+  }
+  .stat-label {
+    font-size: 0.75rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(220,195,170,0.5);
+    margin-top: 0.3rem;
+  }
+
+  /* ============================
+     SECTION SHARED
+  ============================= */
+  section { padding: 7rem 5vw; }
+
+  .section-tag {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    font-size: 0.75rem; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--brown);
+    margin-bottom: 1rem;
+  }
+  .section-tag-line { width: 28px; height: 1px; background: var(--brown); }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700; line-height: 1.15;
+    color: var(--dark); margin-bottom: 1.2rem;
+  }
+  .section-title em { font-style: italic; color: var(--brown); }
+
+  .section-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; color: var(--muted);
+    line-height: 1.8; max-width: 520px;
+  }
+
+  /* ============================
+     DESTINATIONS GRID
+  ============================= */
+  .destinations { background: var(--white); }
+
+  .destinations-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1rem;
+  }
+
+  .dest-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 280px 280px;
+    gap: 16px;
+  }
+
+  .dest-card {
+    position: relative; overflow: hidden;
+    cursor: pointer; border-radius: 3px;
+  }
+  .dest-card:first-child {
+    grid-row: span 2;
+  }
+
+  .dest-card img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.7s cubic-bezier(0.4,0,0.2,1);
+  }
+  .dest-card:hover img { transform: scale(1.07); }
+
+  .dest-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(84,26,26,0.85) 0%, transparent 55%);
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 1.8rem;
+  }
+
+  .dest-tag {
+    display: inline-block;
+    background: var(--gold); color: white;
+    font-size: 0.65rem; letter-spacing: 0.15em;
+    text-transform: uppercase; padding: 0.2rem 0.7rem;
+    border-radius: 1px; margin-bottom: 0.6rem;
+    width: fit-content;
+  }
+
+  .dest-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 700;
+    color: white; line-height: 1.2;
+    margin-bottom: 0.3rem;
+  }
+  .dest-card:first-child .dest-name { font-size: 2.2rem; }
+
+  .dest-meta {
+    font-size: 0.78rem; color: rgba(241,226,209,0.7);
+    letter-spacing: 0.05em;
+  }
+
+  /* ============================
+     HOW IT WORKS
+  ============================= */
+  .how-it-works {
+    background: var(--cream);
+  }
+
+  .how-header { text-align: center; margin-bottom: 4rem; }
+  .how-header .section-sub { margin: 0 auto; }
+
+  .steps-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .step-card {
+    background: white;
+    padding: 2.5rem 2rem;
+    border-radius: 3px;
+    border-top: 3px solid transparent;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .step-card:hover {
+    border-color: var(--brown);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 50px rgba(84,26,26,0.10);
+  }
+
+  .step-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; font-weight: 900;
+    color: rgba(129,11,56,0.08);
+    line-height: 1; margin-bottom: 1rem;
+  }
+
+  .step-icon {
+    width: 44px; height: 44px; margin-bottom: 1.2rem;
+    background: var(--sand); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .step-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--dark); margin-bottom: 0.8rem;
+  }
+
+  .step-desc {
+    font-size: 0.87rem; color: var(--muted); line-height: 1.7;
+  }
+
+  /* ============================
+     FEATURES
+  ============================= */
+  .features {
+    background: var(--dark);
+    display: flex; gap: 0;
+    padding: 0;
+  }
+
+  .features-left {
+    flex: 1; padding: 7rem 5vw;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+
+  .features-right {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&q=80') center/cover;
+    min-height: 600px;
+    position: relative;
+  }
+  .features-right::before {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(84,26,26,0.25);
+  }
+
+  .features-left .section-tag { color: var(--gold-lt); }
+  .features-left .section-tag-line { background: var(--gold-lt); }
+  .features-left .section-title { color: white; }
+  .features-left .section-sub { color: rgba(220,195,170,0.7); }
+
+  .feature-list {
+    margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.2rem;
+  }
+
+  .feature-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.2rem 1.4rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 3px;
+    transition: background 0.3s;
+  }
+  .feature-item:hover { background: rgba(255,255,255,0.08); }
+
+  .feature-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0; margin-top: 6px;
+  }
+
+  .feature-text strong {
+    display: block; font-size: 0.92rem; font-weight: 600;
+    color: var(--cream); margin-bottom: 0.2rem;
+  }
+  .feature-text span {
+    font-size: 0.82rem; color: rgba(220,195,170,0.55);
+    line-height: 1.5;
+  }
+
+  /* ============================
+     TESTIMONIALS
+  ============================= */
+  .testimonials { background: var(--white); }
+  .test-header { text-align: center; margin-bottom: 3.5rem; }
+
+  .test-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .test-card {
+    background: var(--cream);
+    padding: 2rem;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  .test-card::before {
+    content: '\201C';
+    position: absolute; top: -0.5rem; right: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem; color: rgba(129,11,56,0.07);
+    line-height: 1;
+  }
+
+  .test-stars { color: var(--gold); font-size: 0.85rem; margin-bottom: 1rem; }
+
+  .test-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem; font-style: italic;
+    line-height: 1.75; color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  .test-author {
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .test-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--brown);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; color: white; font-size: 0.9rem;
+  }
+  .test-name { font-size: 0.85rem; font-weight: 600; color: var(--dark); }
+  .test-trip { font-size: 0.75rem; color: var(--muted); }
+
+  /* ============================
+     CTA BANNER
+  ============================= */
+  .cta-banner {
+    background: var(--brown);
+    text-align: center;
+    padding: 5rem 5vw;
+  }
+  .cta-banner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700; color: white;
+    margin-bottom: 1rem;
+  }
+  .cta-banner h2 em { font-style: italic; color: var(--gold-lt); }
+  .cta-banner p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; color: rgba(241,226,209,0.8);
+    margin-bottom: 2rem;
+  }
+  .cta-banner .btn-primary {
+    background: white; color: var(--brown);
+    font-weight: 600;
+  }
+  .cta-banner .btn-primary:hover { background: var(--cream); }
+
+  /* ============================
+     FOOTER
+  ============================= */
+  footer {
+    background: var(--dark);
+    padding: 3rem 5vw 2rem;
+  }
+  .footer-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    padding-bottom: 2rem; margin-bottom: 1.5rem;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; font-weight: 900; letter-spacing: 0.12em;
+    color: var(--cream);
+  }
+  .footer-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.8rem; color: rgba(220,195,170,0.45);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--cream); }
+  .footer-copy {
+    font-size: 0.75rem; color: rgba(220,195,170,0.3);
+    text-align: center;
+  }
+
+  /* ============================
+     AGENT PAGE
+  ============================= */
+  .agent-page { background: var(--white); padding-top: 80px; }
+
+  .agent-hero {
+    background: var(--dark);
+    padding: 5rem 5vw 4rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .agent-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url('https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1600&q=70') center/cover;
+    opacity: 0.12;
+  }
+  .agent-hero-content { position: relative; z-index: 2; }
+
+  .agent-hero .section-tag { justify-content: center; color: var(--gold-lt); }
+  .agent-hero .section-tag-line { background: var(--gold-lt); }
+  .agent-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    font-weight: 900; color: white;
+    margin-bottom: 0.8rem;
+  }
+  .agent-hero h1 em { font-style: italic; color: var(--gold-lt); }
+  .agent-hero p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-style: italic;
+    color: rgba(220,195,170,0.7);
+  }
+
+  /* ============================
+     AGENT FORM AREA
+  ============================= */
+  .agent-body { padding: 4rem 5vw; }
+
+  .agent-layout {
+    display: grid; grid-template-columns: 380px 1fr;
+    gap: 2.5rem; align-items: start;
+    max-width: 1200px; margin: 0 auto;
+  }
+
+  /* --- Form Panel --- */
+  .form-panel {
+    background: white;
+    border: 1px solid rgba(84,26,26,0.10);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(84,26,26,0.07);
+    position: sticky; top: 100px;
+  }
+
+  .form-panel-header {
+    background: var(--brown);
+    padding: 1.5rem 2rem;
+    display: flex; align-items: center; gap: 0.8rem;
+  }
+  .form-panel-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700; color: white;
+  }
+  .form-panel-header span { font-size: 1.4rem; }
+
+  .form-body { padding: 2rem; }
+
+  .form-group { margin-bottom: 1.4rem; }
+
+  .form-label {
+    display: block;
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 0.5rem;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(84,26,26,0.15);
+    border-radius: 2px;
+    background: var(--white);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--brown);
+    box-shadow: 0 0 0 3px rgba(129,11,56,0.08);
+  }
+  .form-input::placeholder { color: rgba(84,26,26,0.3); }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23810B38' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    cursor: pointer;
+  }
+
+  /* Style radio cards */
+  .radio-group {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+  }
+  .radio-card {
+    padding: 0.7rem 0.8rem;
+    border: 1px solid rgba(84,26,26,0.15);
+    border-radius: 2px;
+    cursor: pointer; text-align: center;
+    transition: all 0.2s;
+    font-size: 0.82rem; color: var(--muted);
+    user-select: none;
+  }
+  .radio-card:hover { border-color: var(--brown); color: var(--brown); }
+  .radio-card.selected {
+    background: var(--brown); border-color: var(--brown);
+    color: white; font-weight: 500;
+  }
+
+  .submit-btn {
+    width: 100%;
+    background: var(--brown); color: white;
+    border: none; padding: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    cursor: pointer; border-radius: 2px;
+    transition: all 0.3s;
+    margin-top: 0.5rem;
+    display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+  }
+  .submit-btn:hover { background: var(--dark); transform: translateY(-2px); }
+  .submit-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+  /* --- Result Panel --- */
+  .result-panel {
+    min-height: 500px;
+  }
+
+  /* Empty state */
+  .empty-state {
+    background: var(--cream);
+    border-radius: 4px;
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: var(--dark); margin-bottom: 0.5rem;
+  }
+  .empty-state p { font-size: 0.88rem; color: var(--muted); line-height: 1.7; }
+
+  /* Samples */
+  .sample-queries {
+    margin-top: 2rem;
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  .sample-q {
+    background: white; border: 1px solid rgba(84,26,26,0.12);
+    padding: 0.7rem 1.2rem; border-radius: 2px;
+    cursor: pointer; font-size: 0.83rem; color: var(--brown);
+    text-align: left;
+    transition: all 0.2s;
+  }
+  .sample-q:hover { background: var(--brown); color: white; }
+
+  /* Loading state */
+  .loading-state {
+    display: none;
+    background: white;
+    border: 1px solid rgba(84,26,26,0.10);
+    border-radius: 4px;
+    padding: 3rem;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(84,26,26,0.07);
+  }
+  .loading-state.show { display: block; }
+
+  .loader-ring {
+    width: 50px; height: 50px;
+    border: 3px solid rgba(84,26,26,0.1);
+    border-top-color: var(--brown);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin: 0 auto 1.5rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-state p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem; font-style: italic;
+    color: var(--muted);
+  }
+
+  /* Result content */
+  .result-content {
+    display: none;
+  }
+  .result-content.show { display: block; }
+
+  .result-header {
+    background: var(--dark); padding: 1.5rem 2rem;
+    border-radius: 4px 4px 0 0;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .result-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700; color: white;
+  }
+  .result-badge {
+    background: var(--gold); color: white;
+    font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 0.25rem 0.8rem;
+    border-radius: 1px;
+  }
+
+  .result-meta {
+    background: var(--cream);
+    padding: 1rem 2rem;
+    display: flex; gap: 2rem; flex-wrap: wrap;
+    border-bottom: 1px solid rgba(84,26,26,0.08);
+  }
+  .result-meta-item { font-size: 0.8rem; color: var(--muted); }
+  .result-meta-item strong { color: var(--dark); display: block; font-size: 0.95rem; }
+
+  .result-sections { background: white; border-radius: 0 0 4px 4px; overflow: hidden; }
+
+  .result-section {
+    border-bottom: 1px solid rgba(84,26,26,0.07);
+  }
+  .result-section:last-child { border-bottom: none; }
+
+  .result-section-header {
+    padding: 1.2rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .result-section-header:hover { background: rgba(84,26,26,0.02); }
+
+  .result-section-title {
+    display: flex; align-items: center; gap: 0.8rem;
+    font-size: 0.9rem; font-weight: 600; color: var(--dark);
+  }
+  .result-section-icon {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--cream); display: flex; align-items: center;
+    justify-content: center; font-size: 0.9rem;
+  }
+
+  .result-section-chevron {
+    color: var(--muted); transition: transform 0.3s; font-size: 0.7rem;
+  }
+  .result-section.open .result-section-chevron { transform: rotate(180deg); }
+
+  .result-section-body {
+    display: none;
+    padding: 0 2rem 1.5rem;
+  }
+  .result-section.open .result-section-body { display: block; }
+
+  .result-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem; line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+    background: var(--white);
+    padding: 1.2rem 1.5rem;
+    border-left: 3px solid var(--sand);
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* Download bar */
+  .download-bar {
+    background: var(--cream);
+    border: 1px solid rgba(84,26,26,0.10);
+    border-top: none;
+    padding: 1.2rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    border-radius: 0 0 4px 4px;
+  }
+  .download-bar p { font-size: 0.82rem; color: var(--muted); }
+  .download-bar-btns { display: flex; gap: 0.8rem; }
+
+  .dl-btn {
+    padding: 0.55rem 1.2rem;
+    font-size: 0.78rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border-radius: 2px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+  .dl-btn-primary { background: var(--brown); color: white; border: none; }
+  .dl-btn-primary:hover { background: var(--dark); }
+  .dl-btn-secondary { background: transparent; color: var(--brown); border: 1px solid var(--brown); }
+  .dl-btn-secondary:hover { background: var(--brown); color: white; }
+
+  /* Quick info cards */
+  .info-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .info-card {
+    background: var(--cream); padding: 1.2rem;
+    border-radius: 3px; text-align: center;
+  }
+  .info-card-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--brown); display: block;
+  }
+  .info-card-lbl { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ============================
+     ANIMATIONS
+  ============================= */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up { animation: fadeUp 0.6s ease forwards; }
+  .fade-up-1 { animation-delay: 0.1s; opacity: 0; }
+  .fade-up-2 { animation-delay: 0.25s; opacity: 0; }
+  .fade-up-3 { animation-delay: 0.4s; opacity: 0; }
+  .fade-up-4 { animation-delay: 0.55s; opacity: 0; }
+
+  /* ============================
+     RESPONSIVE
+  ============================= */
+  @media (max-width: 900px) {
+    .dest-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .dest-card:first-child { grid-row: span 1; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .features { flex-direction: column; }
+    .features-right { min-height: 300px; }
+    .test-grid { grid-template-columns: 1fr; }
+    .agent-layout { grid-template-columns: 1fr; }
+    .form-panel { position: static; }
+    .info-cards { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .dest-grid { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 2.5rem; }
+    .nav-links { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .radio-group { grid-template-columns: 1fr; }
+    .info-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================
+     NAVIGATION (shared)
+============================= -->
+<nav id="main-nav">
+  <a class="nav-logo" onclick="showPage('home')">
+    <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 4L6 14v18h8v-10h8v10h8V14L18 4z" fill="#810B38"/>
+      <path d="M18 4L6 14h24L18 4z" fill="#541A1A" opacity="0.6"/>
+    </svg>
+    <span class="nav-logo-text">TRIPS</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#" id="nav-home" class="active" onclick="showPage('home'); return false;">Home</a></li>
+    <li><a href="#" onclick="scrollToSection('destinations'); return false;">Destinations</a></li>
+    <li><a href="#" onclick="scrollToSection('how'); return false;">How It Works</a></li>
+    <li><a href="#" onclick="scrollToSection('about'); return false;">About</a></li>
+    <li><a href="#" id="nav-agent" class="nav-cta" onclick="showPage('agent'); return false;">Plan a Trip</a></li>
+  </ul>
+</nav>
+
+<!-- ============================
+     HOME PAGE
+============================= -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow fade-up fade-up-1">
+        <div class="hero-eyebrow-line"></div>
+        <span>AI-Powered Travel Planning</span>
+      </div>
+      <h1 class="fade-up fade-up-2">
+        Let's <em>Enjoy</em> The<br>Wonders of<br>Nature
+      </h1>
+      <p class="hero-sub fade-up fade-up-3">
+        Your personal AI travel concierge — crafting bespoke itineraries with flights, hotels, weather, and curated experiences across India.
+      </p>
+      <div class="hero-actions fade-up fade-up-4">
+        <button class="btn-primary" onclick="showPage('agent')">Plan My Journey</button>
+        <button class="btn-ghost">
+          <span>▶</span> Watch the Story
+        </button>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+      Scroll
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number">40+</span>
+      <div class="stat-label">Destinations</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">7</span>
+      <div class="stat-label">AI Tools</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">2,400+</span>
+      <div class="stat-label">Trips Planned</div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">4.9★</span>
+      <div class="stat-label">User Rating</div>
+    </div>
+  </div>
+
+  <!-- DESTINATIONS -->
+  <section class="destinations" id="destinations">
+    <div class="destinations-header">
+      <div>
+        <div class="section-tag"><span class="section-tag-line"></span>Popular Destinations</div>
+        <h2 class="section-title">Explore <em>India's</em><br>Finest Treasures</h2>
+      </div>
+      <div class="section-sub">
+        From golden beaches to snow-capped peaks — every corner of India holds a story waiting to be discovered.
+      </div>
+    </div>
+    <div class="dest-grid">
+      <div class="dest-card" onclick="planTrip('Goa')">
+        <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=900&q=80" alt="Goa"/>
+        <div class="dest-overlay">
+          <div class="dest-tag">Beach Paradise</div>
+          <div class="dest-name">Goa</div>
+          <div class="dest-meta">3–7 days recommended • ₹15,000 avg</div>
+        </div>
+      </div>
+      <div class="dest-card" onclick="planTrip('Manali')">
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=700&q=80" alt="Manali"/>
+        <div class="dest-overlay">
+          <div class="dest-tag">Mountain Escape</div>
+          <div class="dest-name">Manali</div>
+          <div class="dest-meta">5–8 days • ₹20,000 avg</div>
+        </div>
+      </div>
+      <div class="dest-card" onclick="planTrip('Kerala')">
+        <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=700&q=80" alt="Kerala"/>
+        <div class="dest-overlay">
+          <div class="dest-tag">God's Own Country</div>
+          <div class="dest-name">Kerala</div>
+          <div class="dest-meta">4–6 days • ₹18,000 avg</div>
+        </div>
+      </div>
+      <div class="dest-card" onclick="planTrip('Jaipur')">
+        <img src="https://images.unsplash.com/photo-1599661046289-e31897846e41?w=700&q=80" alt="Jaipur"/>
+        <div class="dest-overlay">
+          <div class="dest-tag">Royal Heritage</div>
+          <div class="dest-name">Jaipur</div>
+          <div class="dest-meta">3–5 days • ₹12,000 avg</div>
+        </div>
+      </div>
+      <div class="dest-card" onclick="planTrip('Agra')">
+        <img src="https://images.unsplash.com/photo-1564507592333-c60657eea523?w=700&q=80" alt="Agra"/>
+        <div class="dest-overlay">
+          <div class="dest-tag">Wonder of the World</div>
+          <div class="dest-name">Agra</div>
+          <div class="dest-meta">2–3 days • ₹8,000 avg</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works" id="how">
+    <div class="how-header">
+      <div class="section-tag" style="justify-content:center;"><span class="section-tag-line"></span>The Process<span class="section-tag-line"></span></div>
+      <h2 class="section-title" style="text-align:center;">How Your <em>AI Trip</em><br>Comes to Life</h2>
+      <p class="section-sub" style="text-align:center; margin:0 auto;">
+        Four simple steps. One extraordinary journey. Fully crafted by your personal AI travel expert.
+      </p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <div class="step-icon">🛫</div>
+        <div class="step-title">Tell Us Your Dream</div>
+        <p class="step-desc">Enter your origin, destination, dates, budget, and travel style. The more you share, the better we plan.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <div class="step-icon">🤖</div>
+        <div class="step-title">AI Gets to Work</div>
+        <p class="step-desc">Our LangChain AI agent searches flights, trains, hotels, weather, and local attractions in real time.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <div class="step-icon">🗺️</div>
+        <div class="step-title">Review Your Itinerary</div>
+        <p class="step-desc">A beautifully structured day-by-day plan with transport details, accommodation picks, and must-see places.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">04</div>
+        <div class="step-icon">📄</div>
+        <div class="step-title">Download & Go</div>
+        <p class="step-desc">Export your complete itinerary as a PDF, share it on WhatsApp, and embark on your adventure.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="about">
+    <div class="features-left">
+      <div class="section-tag"><span class="section-tag-line"></span>Why Choose Us</div>
+      <h2 class="section-title">Intelligent Travel,<br><em>Refined</em> Experience</h2>
+      <p class="section-sub">Seven AI tools working in concert to deliver the most thoughtful, accurate, and personalised travel plans in India.</p>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Real-Time Flight & Train Search</strong>
+            <span>Cheapest routes found instantly from our live dataset — no guesswork.</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Live Weather Forecasts</strong>
+            <span>Open-Meteo API integration — know what to pack before you leave.</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Curated Hotel Picks</strong>
+            <span>Budget to luxury — filtered by your travel style and price ceiling.</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Full Budget Breakdown</strong>
+            <span>Transport, accommodation, food, and incidentals — every rupee accounted for.</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-dot"></div>
+          <div class="feature-text">
+            <strong>Restaurant Recommendations</strong>
+            <span>Top-rated local dining by cuisine type — veg-friendly options highlighted.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="features-right"></div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="test-header">
+      <div class="section-tag" style="justify-content:center;"><span class="section-tag-line"></span>Traveller Stories<span class="section-tag-line"></span></div>
+      <h2 class="section-title" style="text-align:center;">What Our <em>Explorers</em> Say</h2>
+    </div>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">The AI planned our Goa trip perfectly — found the cheapest IndiGo flight, a stunning beachside resort under ₹4,000, and even warned us about the monsoon timing. Absolutely brilliant.</p>
+        <div class="test-author">
+          <div class="test-avatar">P</div>
+          <div>
+            <div class="test-name">Priya Sharma</div>
+            <div class="test-trip">Delhi → Goa, 5 days</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">Solo trip to Manali sorted in 3 minutes. The budget breakdown was spot-on — I ended up spending almost exactly what the AI estimated. Genuinely magical experience.</p>
+        <div class="test-author">
+          <div class="test-avatar">R</div>
+          <div>
+            <div class="test-name">Rohit Menon</div>
+            <div class="test-trip">Mumbai → Manali, 7 days</div>
+          </div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <p class="test-text">Planned a family trip to Kerala — the AI found veg-friendly restaurants, a family hotel with a pool, and the best time to visit the backwaters. Five stars doesn't do it justice.</p>
+        <div class="test-author">
+          <div class="test-avatar">A</div>
+          <div>
+            <div class="test-name">Ananya Krishnan</div>
+            <div class="test-trip">Bangalore → Kerala, 6 days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-banner">
+    <h2>Start Your <em>Journey</em> Today</h2>
+    <p>Let your AI travel expert craft the perfect itinerary — free, instant, and beautifully personalised.</p>
+    <button class="btn-primary" onclick="showPage('agent')">Plan My Dream Trip →</button>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">TRIPS</div>
+      <ul class="footer-links">
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2026 TRIPS — AI Travel Planner. Powered by LangChain + Groq LLaMA3-70B.</p>
+  </footer>
+
+</div><!-- end home page -->
+
+<!-- ============================
+     AGENT PAGE
+============================= -->
+<div id="page-agent" class="page agent-page">
+
+  <!-- Hero -->
+  <div class="agent-hero">
+    <div class="agent-hero-content">
+      <div class="section-tag" style="justify-content:center;">
+        <span class="section-tag-line"></span>AI Travel Agent<span class="section-tag-line"></span>
+      </div>
+      <h1>Plan Your <em>Perfect</em> Journey</h1>
+      <p>Fill in the details below — our AI will craft a complete itinerary in seconds.</p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="agent-body">
+    <div class="agent-layout">
+
+      <!-- FORM PANEL -->
+      <div class="form-panel">
+        <div class="form-panel-header">
+          <span>🗺️</span>
+          <h3>Trip Details</h3>
+        </div>
+        <div class="form-body">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">From</label>
+              <input class="form-input" id="from-city" type="text" placeholder="e.g. Delhi"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">To</label>
+              <input class="form-input" id="to-city" type="text" placeholder="e.g. Goa"/>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input class="form-input" id="travel-date" type="date"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Number of Days</label>
+              <input class="form-input" id="num-days" type="number" min="1" max="14" value="3"/>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Budget (INR)</label>
+            <input class="form-input" id="budget" type="number" min="1000" max="500000" step="500" value="20000" placeholder="₹20,000"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Transport Preference</label>
+            <div class="radio-group" id="transport-group">
+              <div class="radio-card selected" data-val="Flight">✈️ Flight</div>
+              <div class="radio-card" data-val="Train">🚂 Train</div>
+              <div class="radio-card" data-val="Bus">🚌 Bus</div>
+              <div class="radio-card" data-val="Either">🔀 Either</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Trip Style</label>
+            <select class="form-select" id="trip-style">
+              <option value="Budget">🎒 Budget</option>
+              <option value="Standard" selected>⭐ Standard</option>
+              <option value="Comfort">✨ Comfort</option>
+              <option value="Luxury">💎 Luxury</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Travel Companions</label>
+            <select class="form-select" id="companions">
+              <option value="Solo">Solo</option>
+              <option value="Couple">Couple</option>
+              <option value="Family" selected>Family</option>
+              <option value="Friends Group">Friends Group</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Special Requests (optional)</label>
+            <input class="form-input" id="special" type="text" placeholder="e.g. vegetarian food, beachside hotel"/>
+          </div>
+
+          <button class="submit-btn" id="plan-btn" onclick="planTrip()">
+            <span>✨</span> Generate My Itinerary
+          </button>
+
+        </div>
+      </div>
+
+      <!-- RESULT PANEL -->
+      <div class="result-panel">
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-icon">🧭</div>
+          <h3>Your Itinerary Awaits</h3>
+          <p>Fill in your trip details and hit "Generate" — our AI will search flights, hotels, weather, attractions, and restaurants to craft your perfect plan.</p>
+          <div class="sample-queries">
+            <p style="font-size:0.75rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.5rem;">Try a Sample Trip</p>
+            <button class="sample-q" onclick="fillSample('Delhi','Goa','2026-06-15',3,18000,'Flight','Standard','Couple')">✈️ Delhi → Goa · 3 Days · Couple · ₹18,000</button>
+            <button class="sample-q" onclick="fillSample('Mumbai','Manali','2026-07-01',6,35000,'Train','Comfort','Friends Group')">🚂 Mumbai → Manali · 6 Days · Friends · ₹35,000</button>
+            <button class="sample-q" onclick="fillSample('Bangalore','Kerala','2026-08-10',5,25000,'Flight','Standard','Family')">✈️ Bangalore → Kerala · 5 Days · Family · ₹25,000</button>
+            <button class="sample-q" onclick="fillSample('Chennai','Jaipur','2026-09-05',4,22000,'Flight','Luxury','Couple')">✈️ Chennai → Jaipur · 4 Days · Luxury · ₹22,000</button>
+          </div>
+        </div>
+
+        <!-- Loading state -->
+        <div class="loading-state" id="loading-state">
+          <div class="loader-ring"></div>
+          <p id="loading-msg">Searching for the best flights...</p>
+          <div style="margin-top:1.5rem; display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap;" id="loading-steps">
+            <span style="font-size:0.75rem; color:var(--muted); background:var(--cream); padding:0.3rem 0.8rem; border-radius:20px;">✈️ Flights</span>
+            <span style="font-size:0.75rem; color:var(--muted); background:var(--cream); padding:0.3rem 0.8rem; border-radius:20px;">🚂 Trains</span>
+            <span style="font-size:0.75rem; color:var(--muted); background:var(--cream); padding:0.3rem 0.8rem; border-radius:20px;">🏨 Hotels</span>
+            <span style="font-size:0.75rem; color:var(--muted); background:var(--cream); padding:0.3rem 0.8rem; border-radius:20px;">🌤️ Weather</span>
+            <span style="font-size:0.75rem; color:var(--muted); background:var(--cream); padding:0.3rem 0.8rem; border-radius:20px;">🗺️ Places</span>
+            <span style="font-size:0.75rem; color:var(--muted); background:var(--cream); padding:0.3rem 0.8rem; border-radius:20px;">🍽️ Restaurants</span>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div class="result-content" id="result-content">
+          <div class="result-header">
+            <h3 id="result-title">Your Trip Plan</h3>
+            <span class="result-badge">AI Generated</span>
+          </div>
+          <div class="result-meta" id="result-meta"></div>
+          <div class="info-cards" id="info-cards" style="padding:1rem 2rem 0; background:white;"></div>
+          <div class="result-sections" id="result-sections"></div>
+          <div class="download-bar">
+            <p>📄 Your personalised itinerary is ready. Download or share it below.</p>
+            <div class="download-bar-btns">
+              <button class="dl-btn dl-btn-primary" onclick="downloadText()">📄 Download PDF</button>
+              <button class="dl-btn dl-btn-secondary" onclick="shareWhatsApp()">📱 WhatsApp</button>
+              <button class="dl-btn dl-btn-secondary" onclick="planAnother()">🔄 New Trip</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end result panel -->
+    </div>
+  </div>
+
+  <!-- Footer (minimal) -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">TRIPS</div>
+      <ul class="footer-links">
+        <li><a href="#" onclick="showPage('home'); return false;">← Back to Home</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">About</a></li>
+      </ul>
+    </div>
+    <p class="footer-copy">© 2026 TRIPS — Always verify prices and availability before booking.</p>
+  </footer>
+
+</div><!-- end agent page -->
+
+<script>
+  // ========================
+  // PAGE ROUTING
+  // ========================
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+
+    document.getElementById('nav-home').classList.toggle('active', page === 'home');
+    document.getElementById('nav-agent').classList.toggle('active', page === 'agent');
+  }
+
+  function scrollToSection(id) {
+    showPage('home');
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  }
+
+  // Nav scroll shadow
+  window.addEventListener('scroll', () => {
+    document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  // ========================
+  // TRANSPORT RADIO CARDS
+  // ========================
+  document.querySelectorAll('#transport-group .radio-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.querySelectorAll('#transport-group .radio-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  function getTransport() {
+    const sel = document.querySelector('#transport-group .radio-card.selected');
+    return sel ? sel.dataset.val : 'Flight';
+  }
+
+  // Set default date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('travel-date').value = today;
+
+  // ========================
+  // SAMPLE FILL
+  // ========================
+  function fillSample(from, to, date, days, budget, transport, style, companions) {
+    showPage('agent');
+    setTimeout(() => {
+      document.getElementById('from-city').value = from;
+      document.getElementById('to-city').value = to;
+      document.getElementById('travel-date').value = date;
+      document.getElementById('num-days').value = days;
+      document.getElementById('budget').value = budget;
+      document.getElementById('trip-style').value = style;
+      document.getElementById('companions').value = companions;
+      // Set transport radio
+      document.querySelectorAll('#transport-group .radio-card').forEach(c => {
+        c.classList.toggle('selected', c.dataset.val === transport);
+      });
+    }, 100);
+  }
+
+  // Destination card click on home page
+  function planTrip(dest) {
+    if (dest) {
+      showPage('agent');
+      setTimeout(() => { document.getElementById('to-city').value = dest; }, 100);
+    } else {
+      _planTrip();
+    }
+  }
+
+  // ========================
+  // PLAN TRIP (DEMO)
+  // ========================
+  const loadingMsgs = [
+    "Searching for the best flights...",
+    "Comparing train routes...",
+    "Finding top-rated hotels...",
+    "Checking the weather forecast...",
+    "Discovering hidden attractions...",
+    "Picking the finest restaurants...",
+    "Calculating your budget...",
+    "Crafting your perfect itinerary...",
+  ];
+
+  let currentResult = {};
+
+  function _planTrip() {
+    const from = document.getElementById('from-city').value.trim();
+    const to = document.getElementById('to-city').value.trim();
+    const date = document.getElementById('travel-date').value;
+    const days = document.getElementById('num-days').value;
+    const budget = parseInt(document.getElementById('budget').value);
+    const transport = getTransport();
+    const style = document.getElementById('trip-style').value;
+    const companions = document.getElementById('companions').value;
+    const special = document.getElementById('special').value.trim();
+
+    if (!from || !to) {
+      alert('Please enter both origin and destination cities.');
+      return;
+    }
+
+    currentResult = { from, to, date, days, budget, transport, style, companions };
+
+    // Show loading
+    document.getElementById('empty-state').style.display = 'none';
+    document.getElementById('result-content').classList.remove('show');
+    document.getElementById('loading-state').classList.add('show');
+
+    let msgIdx = 0;
+    const msgInterval = setInterval(() => {
+      msgIdx = (msgIdx + 1) % loadingMsgs.length;
+      document.getElementById('loading-msg').textContent = loadingMsgs[msgIdx];
+    }, 900);
+
+    // Simulate AI response (replace with actual fetch to your backend)
+    setTimeout(() => {
+      clearInterval(msgInterval);
+      document.getElementById('loading-state').classList.remove('show');
+      renderResult(from, to, date, days, budget, transport, style, companions, special);
+    }, 5000);
+  }
+
+  // Override planTrip when no args
+  const _origPlanTrip = planTrip;
+  planTrip = function(dest) {
+    if (dest && typeof dest === 'string') {
+      showPage('agent');
+      setTimeout(() => { document.getElementById('to-city').value = dest; }, 100);
+    } else {
+      _planTrip();
+    }
+  };
+
+  document.getElementById('plan-btn').onclick = _planTrip;
+
+  // ========================
+  // RENDER RESULT (Demo)
+  // ========================
+  function renderResult(from, to, date, days, budget, transport, style, companions, special) {
+    // Title
+    document.getElementById('result-title').textContent = `${from} → ${to} — ${days}-Day ${style} Trip`;
+
+    // Meta
+    document.getElementById('result-meta').innerHTML = `
+      <div class="result-meta-item"><strong>${from}</strong> Origin</div>
+      <div class="result-meta-item"><strong>${to}</strong> Destination</div>
+      <div class="result-meta-item"><strong>${days} Days</strong> Duration</div>
+      <div class="result-meta-item"><strong>₹${parseInt(budget).toLocaleString('en-IN')}</strong> Budget</div>
+      <div class="result-meta-item"><strong>${transport}</strong> Transport</div>
+      <div class="result-meta-item"><strong>${companions}</strong> Travelling</div>
+    `;
+
+    // Info cards
+    const perDay = Math.round(budget / days);
+    document.getElementById('info-cards').innerHTML = `
+      <div class="info-card">
+        <span class="info-card-val">₹${Math.round(budget * 0.28).toLocaleString('en-IN')}</span>
+        <div class="info-card-lbl">Transport Est.</div>
+      </div>
+      <div class="info-card">
+        <span class="info-card-val">₹${Math.round(budget * 0.45).toLocaleString('en-IN')}</span>
+        <div class="info-card-lbl">Hotel Est.</div>
+      </div>
+      <div class="info-card">
+        <span class="info-card-val">₹${perDay.toLocaleString('en-IN')}/day</span>
+        <div class="info-card-lbl">Daily Budget</div>
+      </div>
+    `;
+
+    // Sections
+    const sections = [
+      {
+        icon: '✈️', title: 'Transport Details',
+        content: `Your AI agent is searching for the cheapest ${transport.toLowerCase()} options from ${from} to ${to}.\n\nIn your actual application, this section will display:\n• Cheapest flight / train found\n• Airline / train name and number\n• Departure and arrival times\n• Price in ₹ and travel class\n• Duration of journey\n\nThis demo simulates the UI — connect your run_travel_agent() backend to populate real data here.`
+      },
+      {
+        icon: '🏨', title: 'Hotel Recommendations',
+        content: `Top hotels in ${to} matching your ${style.toLowerCase()} preference and budget:\n\nYour AI will surface the top 3 hotels by rating, filtered under your per-night ceiling.\n• Hotel name, type (budget/standard/luxury)\n• Price per night in ₹\n• Rating and key amenities\n• Suitability for ${companions.toLowerCase()} travel\n\nConnect your search_hotels() tool to populate live results here.`
+      },
+      {
+        icon: '🗺️', title: 'Day-wise Itinerary',
+        content: `${days}-Day Plan for ${to}:\n\n${'DAY ' + Array.from({length:parseInt(days)},(_,i)=>i+1).map(d=>`${d}:\n• Morning: Visit top-rated attraction\n• Afternoon: Explore local markets & culture\n• Evening: Sunset at iconic viewpoint\n• Dinner: Recommended local restaurant\n`).join('\n')}\nYour AI crafts this day-by-day using the places, restaurants, and weather data — powered by your search_places() and get_weather() tools.`
+      },
+      {
+        icon: '🌤️', title: 'Weather Forecast',
+        content: `Weather in ${to} for your travel dates:\n\nStarting ${date} for ${days} days:\n• Conditions fetched live from Open-Meteo API\n• Daily high and low temperatures (°C)\n• Rain / cloud / clear sky forecast\n• Packing recommendations\n\nYour get_weather() tool pulls this from Open-Meteo in real time for any supported city.`
+      },
+      {
+        icon: '🍽️', title: 'Restaurant Picks',
+        content: `Top dining in ${to}${special ? ' (noting: ' + special + ')' : ''}:\n\nYour AI recommends the best-rated restaurants by cuisine type, including:\n• Restaurant name and cuisine style\n• Average cost per person (₹)\n• Vegetarian-friendly tag where applicable\n• Opening timings\n\nPowered by your search_restaurants() tool with local dataset.`
+      },
+      {
+        icon: '💰', title: 'Full Budget Breakdown',
+        content: `Estimated Budget for ${days} Days in ${to}:\n\n  ${transport}: ₹${Math.round(budget*0.28).toLocaleString('en-IN')}\n  Hotel (${days} nights @ ₹${Math.round(budget*0.45/days).toLocaleString('en-IN')}/night): ₹${Math.round(budget*0.45).toLocaleString('en-IN')}\n  Food & Dining: ₹${Math.round(budget*0.15).toLocaleString('en-IN')}\n  Activities & Entry: ₹${Math.round(budget*0.07).toLocaleString('en-IN')}\n  Incidentals: ₹${Math.round(budget*0.05).toLocaleString('en-IN')}\n  ─────────────────────────\n  Total Estimated: ₹${budget.toLocaleString('en-IN')}\n\nGenerated by your estimate_budget() tool — fully dynamic based on actual flight and hotel prices found.`
+      }
+    ];
+
+    const container = document.getElementById('result-sections');
+    container.innerHTML = '';
+    sections.forEach((sec, i) => {
+      const div = document.createElement('div');
+      div.className = 'result-section' + (i === 0 ? ' open' : '');
+      div.innerHTML = `
+        <div class="result-section-header" onclick="toggleSection(this.parentElement)">
+          <div class="result-section-title">
+            <div class="result-section-icon">${sec.icon}</div>
+            ${sec.title}
+          </div>
+          <span class="result-section-chevron">▼</span>
+        </div>
+        <div class="result-section-body">
+          <div class="result-text">${sec.content}</div>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+
+    document.getElementById('result-content').classList.add('show');
+    document.getElementById('result-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function toggleSection(el) {
+    el.classList.toggle('open');
+  }
+
+  // ========================
+  // ACTIONS
+  // ========================
+  function downloadText() {
+    const { from, to, days, budget } = currentResult;
+    alert(`In your Streamlit app, this triggers:\n\ngenerate_trip_pdf(itinerary_text, source="${from}", destination="${to}", num_days=${days}, budget=${budget})\n\nand serves the PDF via st.download_button().`);
+  }
+
+  function shareWhatsApp() {
+    const { from, to, days } = currentResult;
+    const msg = `🌍 My AI Travel Plan: ${from} → ${to} for ${days} days!\n\nPlanned by TRIPS — AI Travel Planner 🤖✈️`;
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  function planAnother() {
+    document.getElementById('result-content').classList.remove('show');
+    document.getElementById('loading-state').classList.remove('show');
+    document.getElementById('empty-state').style.display = '';
+    window.scrollTo(0, 0);
+  }
+</script>
+</body>
+</html>

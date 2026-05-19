@@ -1,0 +1,7 @@
+langchain
+langchain-openai
+openai
+streamlit
+requests
+python-dotenv
+reportlab

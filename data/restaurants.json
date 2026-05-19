@@ -1,0 +1,303 @@
+
+[
+  {
+    "restaurant_id": "R001",
+    "name": "The Fisherman's Catch",
+    "city": "Goa",
+    "cuisine_type": "seafood",
+    "avg_cost_per_person_inr": 450,
+    "rating": 4.6,
+    "vegetarian_friendly": false,
+    "timings": "11:00 AM - 11:00 PM"
+  },
+  {
+    "restaurant_id": "R002",
+    "name": "Spice Garden",
+    "city": "Goa",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 350,
+    "rating": 4.4,
+    "vegetarian_friendly": true,
+    "timings": "12:00 PM - 10:30 PM"
+  },
+  {
+    "restaurant_id": "R003",
+    "name": "Beach Shack Taverna",
+    "city": "Goa",
+    "cuisine_type": "seafood",
+    "avg_cost_per_person_inr": 500,
+    "rating": 4.5,
+    "vegetarian_friendly": false,
+    "timings": "10:00 AM - 11:30 PM"
+  },
+  {
+    "restaurant_id": "R004",
+    "name": "Marina Delights",
+    "city": "Chennai",
+    "cuisine_type": "seafood",
+    "avg_cost_per_person_inr": 400,
+    "rating": 4.3,
+    "vegetarian_friendly": false,
+    "timings": "11:30 AM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R005",
+    "name": "South Indian Cafe",
+    "city": "Chennai",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 250,
+    "rating": 4.5,
+    "vegetarian_friendly": true,
+    "timings": "6:00 AM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R006",
+    "name": "Chettinad Express",
+    "city": "Chennai",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 300,
+    "rating": 4.2,
+    "vegetarian_friendly": false,
+    "timings": "12:00 PM - 11:00 PM"
+  },
+  {
+    "restaurant_id": "R007",
+    "name": "Coimbatore Kitchen",
+    "city": "Coimbatore",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 280,
+    "rating": 4.1,
+    "vegetarian_friendly": true,
+    "timings": "11:00 AM - 9:30 PM"
+  },
+  {
+    "restaurant_id": "R008",
+    "name": "Spice Routes",
+    "city": "Coimbatore",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 320,
+    "rating": 4.3,
+    "vegetarian_friendly": true,
+    "timings": "12:00 PM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R009",
+    "name": "Coffee House Charm",
+    "city": "Coimbatore",
+    "cuisine_type": "cafe",
+    "avg_cost_per_person_inr": 180,
+    "rating": 4.2,
+    "vegetarian_friendly": true,
+    "timings": "7:00 AM - 9:00 PM"
+  },
+  {
+    "restaurant_id": "R010",
+    "name": "Delhi Darbar",
+    "city": "Delhi",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 400,
+    "rating": 4.4,
+    "vegetarian_friendly": true,
+    "timings": "12:00 PM - 11:00 PM"
+  },
+  {
+    "restaurant_id": "R011",
+    "name": "Mughlai Palace",
+    "city": "Delhi",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 500,
+    "rating": 4.5,
+    "vegetarian_friendly": false,
+    "timings": "11:30 AM - 11:30 PM"
+  },
+  {
+    "restaurant_id": "R012",
+    "name": "Tandoor Masters",
+    "city": "Delhi",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 350,
+    "rating": 4.3,
+    "vegetarian_friendly": true,
+    "timings": "12:00 PM - 10:30 PM"
+  },
+  {
+    "restaurant_id": "R013",
+    "name": "Coastal Flavors",
+    "city": "Mumbai",
+    "cuisine_type": "seafood",
+    "avg_cost_per_person_inr": 550,
+    "rating": 4.5,
+    "vegetarian_friendly": false,
+    "timings": "1:00 PM - 11:00 PM"
+  },
+  {
+    "restaurant_id": "R014",
+    "name": "Bombay Junction",
+    "city": "Mumbai",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 420,
+    "rating": 4.4,
+    "vegetarian_friendly": true,
+    "timings": "12:00 PM - 11:00 PM"
+  },
+  {
+    "restaurant_id": "R015",
+    "name": "Street Food Hub",
+    "city": "Mumbai",
+    "cuisine_type": "street_food",
+    "avg_cost_per_person_inr": 150,
+    "rating": 4.3,
+    "vegetarian_friendly": true,
+    "timings": "10:00 AM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R016",
+    "name": "Agra Biryani House",
+    "city": "Agra",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 280,
+    "rating": 4.2,
+    "vegetarian_friendly": false,
+    "timings": "12:00 PM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R017",
+    "name": "Taj Garden Cafe",
+    "city": "Agra",
+    "cuisine_type": "cafe",
+    "avg_cost_per_person_inr": 220,
+    "rating": 4.1,
+    "vegetarian_friendly": true,
+    "timings": "8:00 AM - 8:00 PM"
+  },
+  {
+    "restaurant_id": "R018",
+    "name": "Petha Sweet House",
+    "city": "Agra",
+    "cuisine_type": "desserts",
+    "avg_cost_per_person_inr": 120,
+    "rating": 4.3,
+    "vegetarian_friendly": true,
+    "timings": "9:00 AM - 9:00 PM"
+  },
+  {
+    "restaurant_id": "R019",
+    "name": "Jaipur Palace Dining",
+    "city": "Jaipur",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 380,
+    "rating": 4.4,
+    "vegetarian_friendly": true,
+    "timings": "11:00 AM - 10:30 PM"
+  },
+  {
+    "restaurant_id": "R020",
+    "name": "Hawa Mahal Kebabs",
+    "city": "Jaipur",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 320,
+    "rating": 4.3,
+    "vegetarian_friendly": false,
+    "timings": "12:00 PM - 11:00 PM"
+  },
+  {
+    "restaurant_id": "R021",
+    "name": "Rajwada Thali House",
+    "city": "Jaipur",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 290,
+    "rating": 4.5,
+    "vegetarian_friendly": true,
+    "timings": "11:00 AM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R022",
+    "name": "Backwater Bistro",
+    "city": "Kerala",
+    "cuisine_type": "seafood",
+    "avg_cost_per_person_inr": 420,
+    "rating": 4.4,
+    "vegetarian_friendly": false,
+    "timings": "12:30 PM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R023",
+    "name": "Sadya Grand",
+    "city": "Kerala",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 250,
+    "rating": 4.6,
+    "vegetarian_friendly": true,
+    "timings": "11:00 AM - 9:30 PM"
+  },
+  {
+    "restaurant_id": "R024",
+    "name": "Spice Coast Kitchen",
+    "city": "Kerala",
+    "cuisine_type": "seafood",
+    "avg_cost_per_person_inr": 380,
+    "rating": 4.3,
+    "vegetarian_friendly": false,
+    "timings": "12:00 PM - 10:30 PM"
+  },
+  {
+    "restaurant_id": "R025",
+    "name": "Snow Peak Cafe",
+    "city": "Manali",
+    "cuisine_type": "cafe",
+    "avg_cost_per_person_inr": 300,
+    "rating": 4.5,
+    "vegetarian_friendly": true,
+    "timings": "8:00 AM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R026",
+    "name": "Himalayan Flavors",
+    "city": "Manali",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 350,
+    "rating": 4.4,
+    "vegetarian_friendly": true,
+    "timings": "11:00 AM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R027",
+    "name": "Tibetan Kitchen Manali",
+    "city": "Manali",
+    "cuisine_type": "tibetan",
+    "avg_cost_per_person_inr": 250,
+    "rating": 4.6,
+    "vegetarian_friendly": true,
+    "timings": "10:00 AM - 9:30 PM"
+  },
+  {
+    "restaurant_id": "R028",
+    "name": "Hyderabad Dum Biryani",
+    "city": "Hyderabad",
+    "cuisine_type": "indian",
+    "avg_cost_per_person_inr": 350,
+    "rating": 4.7,
+    "vegetarian_friendly": false,
+    "timings": "12:00 PM - 11:30 PM"
+  },
+  {
+    "restaurant_id": "R029",
+    "name": "Charminar Cafe",
+    "city": "Hyderabad",
+    "cuisine_type": "cafe",
+    "avg_cost_per_person_inr": 200,
+    "rating": 4.3,
+    "vegetarian_friendly": true,
+    "timings": "7:00 AM - 10:00 PM"
+  },
+  {
+    "restaurant_id": "R030",
+    "name": "Bangalore Brew House",
+    "city": "Bangalore",
+    "cuisine_type": "cafe",
+    "avg_cost_per_person_inr": 400,
+    "rating": 4.4,
+    "vegetarian_friendly": true,
+    "timings": "9:00 AM - 11:00 PM"
+  }
+]
