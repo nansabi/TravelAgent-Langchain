@@ -32,7 +32,7 @@ def get_agent_executor():
                        search_restaurants, search_trains)
 
     from langchain_groq import ChatGroq
-    from langchain.prompts import PromptTemplate
+    from langchain_core.prompts import PromptTemplate
     from langchain.agents import create_react_agent, AgentExecutor
 
     tools = [search_flights, search_hotels, search_places,
