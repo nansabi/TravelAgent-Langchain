@@ -1,6 +1,6 @@
 """
 Agent runner for the travel_agent project.
-Uses Groq LLaMA3 via LangChain ReAct agent.
+Uses Groq LLaMA3 via LangGraph ReAct agent.
 """
 
 import os
@@ -32,8 +32,7 @@ def get_agent_executor():
                        search_restaurants, search_trains)
 
     from langchain_groq import ChatGroq
-    from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-    from langchain.agents import AgentExecutor, create_tool_calling_agent
+    from langgraph.prebuilt import create_react_agent
 
     tools = [search_flights, search_hotels, search_places,
              get_weather, estimate_budget,
@@ -42,25 +41,19 @@ def get_agent_executor():
     llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0,
                    api_key=api_key)
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", """You are an expert AI travel planner for India. 
-Your job is to help users plan complete trips including flights, trains, hotels, 
+    system_prompt = """You are an expert AI travel planner for India.
+Your job is to help users plan complete trips including flights, trains, hotels,
 places to visit, restaurants, weather, and budget breakdown.
 Always be helpful, detailed, and provide rupee costs.
-Use the tools available to gather real information before answering."""),
-        ("human", "{input}"),
-        MessagesPlaceholder(variable_name="agent_scratchpad"),
-    ])
+Use the tools available to gather real information before answering.
+Always call multiple tools to give a complete answer."""
 
-    agent = create_tool_calling_agent(llm, tools, prompt)
-
-    agent_executor = AgentExecutor(
-        agent=agent,
-        tools=tools,
-        verbose=True,
-        handle_parsing_errors=True,
-        max_iterations=10,
+    agent_executor = create_react_agent(
+        llm,
+        tools,
+        prompt=system_prompt
     )
+
     return agent_executor
 
 
@@ -68,8 +61,10 @@ def run_travel_agent(user_query: str) -> str:
     """Run the travel planning agent and return the result."""
     try:
         agent_executor = get_agent_executor()
-        result = agent_executor.invoke({"input": user_query})
-        return result["output"]
+        result = agent_executor.invoke({
+            "messages": [{"role": "user", "content": user_query}]
+        })
+        return result["messages"][-1].content
     except Exception as e:
         return f"Agent error: {str(e)}"
 
