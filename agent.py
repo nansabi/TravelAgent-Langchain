@@ -33,8 +33,8 @@ def get_agent_executor():
 
     from langchain_groq import ChatGroq
     from langchain_core.prompts import PromptTemplate
-    from langchain.agents import AgentExecutor
     from langchain_core.agents import create_react_agent
+    from langchain.agents import AgentExecutor
 
     tools = [search_flights, search_hotels, search_places,
              get_weather, estimate_budget,

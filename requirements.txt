@@ -1,8 +1,8 @@
-langchain
-langchain-groq
-langchain-community
-langchain-core
-langchainhub
+langchain==0.2.16
+langchain-groq==0.1.9
+langchain-community==0.2.16
+langchain-core==0.2.38
+langchainhub==0.1.21
 streamlit
 requests
 python-dotenv
