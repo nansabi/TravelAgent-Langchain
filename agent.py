@@ -1,9 +1,10 @@
 """
 Agent runner for the travel_agent project.
-Uses Groq SDK directly with manual tool calling loop.
+Direct tool calling — no LLM tool-use API, zero token waste.
 """
 
 import os
+import re
 import json
 from dotenv import load_dotenv
 
@@ -21,6 +22,64 @@ def get_api_key():
     return os.getenv("GROQ_API_KEY", "")
 
 
+def extract_trip_info(query: str) -> dict:
+    """Extract source, destination, days, budget, date from query string."""
+    import datetime
+
+    query_lower = query.lower()
+
+    # Extract days
+    days_match = re.search(r'(\d+)\s*day', query_lower)
+    num_days = int(days_match.group(1)) if days_match else 3
+
+    # Extract budget
+    budget_match = re.search(r'(\d+)\s*rupee', query_lower)
+    budget = int(budget_match.group(1)) if budget_match else 20000
+
+    # Extract date
+    date_match = re.search(r'(\d{4}-\d{2}-\d{2})', query)
+    travel_date = date_match.group(1) if date_match else datetime.date.today().isoformat()
+
+    # Extract source and destination
+    # Pattern: "to X from Y" or "from Y to X"
+    to_from = re.search(r'to\s+([a-zA-Z]+)\s+from\s+([a-zA-Z]+)', query_lower)
+    from_to = re.search(r'from\s+([a-zA-Z]+)\s+to\s+([a-zA-Z]+)', query_lower)
+
+    if to_from:
+        destination = to_from.group(1).title()
+        source = to_from.group(2).title()
+    elif from_to:
+        source = from_to.group(1).title()
+        destination = from_to.group(2).title()
+    else:
+        source = "Delhi"
+        destination = "Goa"
+
+    # Determine transport preference
+    transport = "flight"
+    if any(w in query_lower for w in ["train", "railway", "rail"]):
+        transport = "train"
+    elif any(w in query_lower for w in ["bus", "drive", "road"]):
+        transport = "bus"
+
+    # Trip style
+    style = "standard"
+    for s in ["budget", "luxury", "comfort", "premium"]:
+        if s in query_lower:
+            style = s
+            break
+
+    return {
+        "source": source,
+        "destination": destination,
+        "num_days": num_days,
+        "budget": budget,
+        "travel_date": travel_date,
+        "transport": transport,
+        "style": style,
+    }
+
+
 def run_travel_agent(user_query: str) -> str:
     """Run the travel planning agent and return the result."""
     try:
@@ -35,204 +94,90 @@ def run_travel_agent(user_query: str) -> str:
 
         client = Groq(api_key=api_key)
 
-        # Tool registry — all tools take a single string query
-        tool_registry = {
-            "search_flights": search_flights,
-            "search_hotels": search_hotels,
-            "search_places": search_places,
-            "get_weather": get_weather,
-            "estimate_budget": estimate_budget,
-            "search_restaurants": search_restaurants,
-            "search_trains": search_trains,
-        }
+        # Step 1: Extract trip info directly from query
+        info = extract_trip_info(user_query)
+        src = info["source"]
+        dst = info["destination"]
+        days = info["num_days"]
+        budget = info["budget"]
+        date = info["travel_date"]
+        transport = info["transport"]
+        style = info["style"]
 
-        # Tool definitions — ALL take single "query" string to match your tools.py
-        tools = [
-            {
-                "type": "function",
-                "function": {
-                    "name": "search_flights",
-                    "description": "Search for flights. Input: 'source,destination' e.g. 'Delhi,Goa'",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "Format: 'source,destination' e.g. 'Delhi,Goa'"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "search_trains",
-                    "description": "Search for trains. Input: 'source,destination' e.g. 'Chennai,Coimbatore'",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "Format: 'source,destination' e.g. 'Chennai,Coimbatore'"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "search_hotels",
-                    "description": "Search for hotels. Input: 'city,max_price,preference' e.g. 'Goa,5000,budget'",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "Format: 'city,max_price,preference' e.g. 'Goa,5000,budget'"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "search_places",
-                    "description": "Search tourist places in a city. Input: city name e.g. 'Goa'",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "City name e.g. 'Goa'"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "search_restaurants",
-                    "description": "Search restaurants. Input: 'city,cuisine_type' e.g. 'Goa,seafood'",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "Format: 'city,cuisine_type' e.g. 'Goa,seafood'"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "get_weather",
-                    "description": "Get weather for a city. Input: 'city,date' e.g. 'Goa,2026-05-21'",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "Format: 'city,date' e.g. 'Goa,2026-05-21'"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "estimate_budget",
-                    "description": "Estimate trip budget. Input: 'flight_price,train_price,hotel_price,num_days' e.g. '4500,0,3000,3'",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "description": "Format: 'flight_price,train_price,hotel_price,num_days' e.g. '4500,0,3000,3'"
-                            }
-                        },
-                        "required": ["query"]
-                    }
-                }
-            },
-        ]
+        hotel_budget = int(budget * 0.4 / days)
 
-        messages = [
-    {
-        "role": "system",
-        "content": (
-            "You are an AI travel planner for India. Use tools to answer. "
-            "STRICT TOOL INPUT RULES - follow exactly:\n"
-            "- search_flights query: 'SourceCity,DestCity' e.g. 'Delhi,Goa'\n"
-            "- search_trains query: 'SourceCity,DestCity' e.g. 'Chennai,Coimbatore'\n"
-            "- search_hotels query: 'DestCity,BudgetNumber,solo' e.g. 'Goa,5000,solo'\n"
-            "- search_places query: 'DestCity' e.g. 'Goa'\n"
-            "- search_restaurants query: 'DestCity,indian' e.g. 'Goa,indian'\n"
-            "- get_weather query: 'DestCity,YYYY-MM-DD' e.g. 'Goa,2026-05-21'\n"
-            "- estimate_budget query: 'FlightCost,TrainCost,HotelCostPerNight,NumDays' e.g. '4500,0,3000,3'\n"
-            "Never repeat source city as destination. Call tools one by one."
+        # Step 2: Call all tools directly — no LLM tool-use
+        results = {}
+
+        # Flights or trains
+        if transport == "train":
+            results["transport"] = search_trains.invoke(f"{src},{dst}")
+        else:
+            flight_result = search_flights.invoke(f"{src},{dst}")
+            if "No flights found" in flight_result:
+                results["transport"] = search_trains.invoke(f"{src},{dst}")
+                transport = "train"
+            else:
+                results["transport"] = flight_result
+
+        results["hotels"] = search_hotels.invoke(f"{dst},{hotel_budget},{style}")
+        results["places"] = search_places.invoke(dst)
+        results["restaurants"] = search_restaurants.invoke(f"{dst},indian")
+        results["weather"] = get_weather.invoke(f"{dst},{date}")
+
+        # Extract transport cost for budget
+        transport_cost = 0
+        cost_match = re.search(r'₹([\d,]+)', results["transport"])
+        if cost_match:
+            transport_cost = int(cost_match.group(1).replace(",", ""))
+
+        hotel_cost = hotel_budget
+        hotel_match = re.search(r'₹([\d,]+)/night', results["hotels"])
+        if hotel_match:
+            hotel_cost = int(hotel_match.group(1).replace(",", ""))
+
+        if transport == "train":
+            results["budget"] = estimate_budget.invoke(f"0,{transport_cost},{hotel_cost},{days}")
+        else:
+            results["budget"] = estimate_budget.invoke(f"{transport_cost},0,{hotel_cost},{days}")
+
+        # Step 3: Ask LLM to synthesize everything into a nice itinerary
+        synthesis_prompt = f"""You are an expert travel planner. Based on the data below, write a complete, 
+friendly {days}-day trip itinerary from {src} to {dst}.
+
+TRANSPORT: {results['transport']}
+
+HOTELS: {results['hotels']}
+
+PLACES TO VISIT: {results['places']}
+
+RESTAURANTS: {results['restaurants']}
+
+WEATHER: {results['weather']}
+
+BUDGET: {results['budget']}
+
+Write a day-by-day plan using the above info. Include:
+- Transport details (flight/train)
+- Hotel recommendation  
+- Day-wise activities using the places listed
+- Restaurant suggestions
+- Weather advisory
+- Final budget summary
+
+Keep it friendly, detailed and practical. Use rupee (₹) for all costs."""
+
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "You are a friendly expert travel planner for India."},
+                {"role": "user", "content": synthesis_prompt}
+            ],
+            max_tokens=2048,
+            temperature=0.7,
         )
-    },
-    {"role": "user", "content": user_query}
-]
 
-        # Agentic loop
-        for _ in range(15):
-            response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                messages=messages,
-                tools=tools,
-                tool_choice="auto",
-                max_tokens=4096,
-            )
-
-            msg = response.choices[0].message
-            messages.append(msg)
-
-            # No tool calls = final answer
-            if not msg.tool_calls:
-                return msg.content or "Sorry, could not generate a travel plan."
-
-            # Execute each tool call
-            for tool_call in msg.tool_calls:
-                fn_name = tool_call.function.name
-                try:
-                    fn_args = json.loads(tool_call.function.arguments)
-                except Exception:
-                    fn_args = {}
-
-                query_input = fn_args.get("query", "")
-                fn = tool_registry.get(fn_name)
-
-                if fn:
-                    try:
-                        # LangChain @tool uses .invoke()
-                        result = fn.invoke(query_input)
-                        tool_result = str(result)
-                    except Exception as e:
-                        tool_result = f"Tool error: {str(e)}"
-                else:
-                    tool_result = f"Tool '{fn_name}' not found."
-
-                messages.append({
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "content": tool_result,
-                })
-
-        return "Sorry, could not complete the travel plan. Please try again."
+        return response.choices[0].message.content
 
     except Exception as e:
         return f"Agent error: {str(e)}"
