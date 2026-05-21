@@ -170,24 +170,23 @@ def run_travel_agent(user_query: str) -> str:
         ]
 
         messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You are an expert AI travel planner for India. "
-                    "Help users plan complete trips. "
-                    "Use tools one at a time in this order: "
-                    "1) search_flights OR search_trains, "
-                    "2) search_hotels, "
-                    "3) search_places, "
-                    "4) search_restaurants, "
-                    "5) get_weather, "
-                    "6) estimate_budget. "
-                    "All tool inputs are a single comma-separated string called 'query'. "
-                    "After all tools are called, give a complete day-by-day itinerary with budget breakdown in rupees."
-                )
-            },
-            {"role": "user", "content": user_query}
-        ]
+    {
+        "role": "system",
+        "content": (
+            "You are an AI travel planner for India. Use tools to answer. "
+            "STRICT TOOL INPUT RULES - follow exactly:\n"
+            "- search_flights query: 'SourceCity,DestCity' e.g. 'Delhi,Goa'\n"
+            "- search_trains query: 'SourceCity,DestCity' e.g. 'Chennai,Coimbatore'\n"
+            "- search_hotels query: 'DestCity,BudgetNumber,solo' e.g. 'Goa,5000,solo'\n"
+            "- search_places query: 'DestCity' e.g. 'Goa'\n"
+            "- search_restaurants query: 'DestCity,indian' e.g. 'Goa,indian'\n"
+            "- get_weather query: 'DestCity,YYYY-MM-DD' e.g. 'Goa,2026-05-21'\n"
+            "- estimate_budget query: 'FlightCost,TrainCost,HotelCostPerNight,NumDays' e.g. '4500,0,3000,3'\n"
+            "Never repeat source city as destination. Call tools one by one."
+        )
+    },
+    {"role": "user", "content": user_query}
+]
 
         # Agentic loop
         for _ in range(15):
