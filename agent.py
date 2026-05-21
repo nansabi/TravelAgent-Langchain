@@ -35,7 +35,7 @@ def run_travel_agent(user_query: str) -> str:
 
         client = Groq(api_key=api_key)
 
-        # Tool registry
+        # Tool registry — all tools take a single string query
         tool_registry = {
             "search_flights": search_flights,
             "search_hotels": search_hotels,
@@ -46,20 +46,22 @@ def run_travel_agent(user_query: str) -> str:
             "search_trains": search_trains,
         }
 
-        # Tool definitions for Groq
+        # Tool definitions — ALL take single "query" string to match your tools.py
         tools = [
             {
                 "type": "function",
                 "function": {
                     "name": "search_flights",
-                    "description": "Search for available flights between two cities",
+                    "description": "Search for flights. Input: 'source,destination' e.g. 'Delhi,Goa'",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "source": {"type": "string", "description": "Departure city"},
-                            "destination": {"type": "string", "description": "Arrival city"}
+                            "query": {
+                                "type": "string",
+                                "description": "Format: 'source,destination' e.g. 'Delhi,Goa'"
+                            }
                         },
-                        "required": ["source", "destination"]
+                        "required": ["query"]
                     }
                 }
             },
@@ -67,14 +69,16 @@ def run_travel_agent(user_query: str) -> str:
                 "type": "function",
                 "function": {
                     "name": "search_trains",
-                    "description": "Search for available trains between two cities",
+                    "description": "Search for trains. Input: 'source,destination' e.g. 'Chennai,Coimbatore'",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "source": {"type": "string", "description": "Departure city"},
-                            "destination": {"type": "string", "description": "Arrival city"}
+                            "query": {
+                                "type": "string",
+                                "description": "Format: 'source,destination' e.g. 'Chennai,Coimbatore'"
+                            }
                         },
-                        "required": ["source", "destination"]
+                        "required": ["query"]
                     }
                 }
             },
@@ -82,13 +86,16 @@ def run_travel_agent(user_query: str) -> str:
                 "type": "function",
                 "function": {
                     "name": "search_hotels",
-                    "description": "Search for hotels in a city",
+                    "description": "Search for hotels. Input: 'city,max_price,preference' e.g. 'Goa,5000,budget'",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "city": {"type": "string", "description": "City to search hotels in"}
+                            "query": {
+                                "type": "string",
+                                "description": "Format: 'city,max_price,preference' e.g. 'Goa,5000,budget'"
+                            }
                         },
-                        "required": ["city"]
+                        "required": ["query"]
                     }
                 }
             },
@@ -96,13 +103,16 @@ def run_travel_agent(user_query: str) -> str:
                 "type": "function",
                 "function": {
                     "name": "search_places",
-                    "description": "Search for tourist places and attractions in a city",
+                    "description": "Search tourist places in a city. Input: city name e.g. 'Goa'",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "city": {"type": "string", "description": "City to search places in"}
+                            "query": {
+                                "type": "string",
+                                "description": "City name e.g. 'Goa'"
+                            }
                         },
-                        "required": ["city"]
+                        "required": ["query"]
                     }
                 }
             },
@@ -110,13 +120,16 @@ def run_travel_agent(user_query: str) -> str:
                 "type": "function",
                 "function": {
                     "name": "search_restaurants",
-                    "description": "Search for restaurants in a city",
+                    "description": "Search restaurants. Input: 'city,cuisine_type' e.g. 'Goa,seafood'",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "city": {"type": "string", "description": "City to search restaurants in"}
+                            "query": {
+                                "type": "string",
+                                "description": "Format: 'city,cuisine_type' e.g. 'Goa,seafood'"
+                            }
                         },
-                        "required": ["city"]
+                        "required": ["query"]
                     }
                 }
             },
@@ -124,13 +137,16 @@ def run_travel_agent(user_query: str) -> str:
                 "type": "function",
                 "function": {
                     "name": "get_weather",
-                    "description": "Get weather forecast for a city",
+                    "description": "Get weather for a city. Input: 'city,date' e.g. 'Goa,2026-05-21'",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "city": {"type": "string", "description": "City name"}
+                            "query": {
+                                "type": "string",
+                                "description": "Format: 'city,date' e.g. 'Goa,2026-05-21'"
+                            }
                         },
-                        "required": ["city"]
+                        "required": ["query"]
                     }
                 }
             },
@@ -138,16 +154,16 @@ def run_travel_agent(user_query: str) -> str:
                 "type": "function",
                 "function": {
                     "name": "estimate_budget",
-                    "description": "Estimate total trip budget",
+                    "description": "Estimate trip budget. Input: 'flight_price,train_price,hotel_price,num_days' e.g. '4500,0,3000,3'",
                     "parameters": {
                         "type": "object",
                         "properties": {
-                            "flight_cost": {"type": "number", "description": "Flight cost in rupees"},
-                            "hotel_cost_per_night": {"type": "number", "description": "Hotel cost per night"},
-                            "num_days": {"type": "integer", "description": "Number of days"},
-                            "food_budget_per_day": {"type": "number", "description": "Food budget per day"}
+                            "query": {
+                                "type": "string",
+                                "description": "Format: 'flight_price,train_price,hotel_price,num_days' e.g. '4500,0,3000,3'"
+                            }
                         },
-                        "required": ["flight_cost", "hotel_cost_per_night", "num_days", "food_budget_per_day"]
+                        "required": ["query"]
                     }
                 }
             },
@@ -158,16 +174,23 @@ def run_travel_agent(user_query: str) -> str:
                 "role": "system",
                 "content": (
                     "You are an expert AI travel planner for India. "
-                    "Help users plan complete trips. Use the tools to find flights or trains, "
-                    "hotels, places, restaurants, weather, and estimate budget. "
-                    "Call tools one at a time. After gathering all info, give a complete itinerary."
+                    "Help users plan complete trips. "
+                    "Use tools one at a time in this order: "
+                    "1) search_flights OR search_trains, "
+                    "2) search_hotels, "
+                    "3) search_places, "
+                    "4) search_restaurants, "
+                    "5) get_weather, "
+                    "6) estimate_budget. "
+                    "All tool inputs are a single comma-separated string called 'query'. "
+                    "After all tools are called, give a complete day-by-day itinerary with budget breakdown in rupees."
                 )
             },
             {"role": "user", "content": user_query}
         ]
 
         # Agentic loop
-        for _ in range(10):
+        for _ in range(15):
             response = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",
                 messages=messages,
@@ -179,9 +202,9 @@ def run_travel_agent(user_query: str) -> str:
             msg = response.choices[0].message
             messages.append(msg)
 
-            # If no tool calls, we have final answer
+            # No tool calls = final answer
             if not msg.tool_calls:
-                return msg.content or "Sorry, I could not generate a travel plan."
+                return msg.content or "Sorry, could not generate a travel plan."
 
             # Execute each tool call
             for tool_call in msg.tool_calls:
@@ -191,19 +214,18 @@ def run_travel_agent(user_query: str) -> str:
                 except Exception:
                     fn_args = {}
 
+                query_input = fn_args.get("query", "")
                 fn = tool_registry.get(fn_name)
+
                 if fn:
                     try:
-                        # Call the tool - handle both LangChain tools and plain functions
-                        if hasattr(fn, 'invoke'):
-                            result = fn.invoke(fn_args)
-                        else:
-                            result = fn(**fn_args)
+                        # LangChain @tool uses .invoke()
+                        result = fn.invoke(query_input)
                         tool_result = str(result)
                     except Exception as e:
                         tool_result = f"Tool error: {str(e)}"
                 else:
-                    tool_result = f"Tool {fn_name} not found."
+                    tool_result = f"Tool '{fn_name}' not found."
 
                 messages.append({
                     "role": "tool",
