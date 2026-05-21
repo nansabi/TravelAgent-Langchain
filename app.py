@@ -144,10 +144,13 @@ section[data-testid="stSidebar"] > div { padding: 1.5rem 1.2rem !important; }
     padding: 1.4rem;
 }
 
-/* ── FIELD LABELS ── */
-.stTextInput label, .stNumberInput label,
-.stDateInput label, .stRadio > label,
-.stSelectSlider > label, .stCheckbox > label {
+/* ── FIELD LABELS (section titles only — not option labels) ── */
+.stTextInput > label,
+.stNumberInput > label,
+.stDateInput > label,
+.stSelectSlider > label,
+[data-testid="stRadio"] > label,
+[data-testid="stCheckbox"] > label {
     font-size: 0.68rem !important;
     font-weight: 700 !important;
     letter-spacing: 0.12em !important;
@@ -175,25 +178,58 @@ section[data-testid="stSidebar"] > div { padding: 1.5rem 1.2rem !important; }
 }
 
 /* ── RADIO ── */
-.stRadio > div { gap: 0.4rem !important; flex-wrap: wrap !important; }
-.stRadio > div > label {
+[data-testid="stRadio"] > div {
+    gap: 0.4rem !important;
+    flex-wrap: wrap !important;
+}
+/* Each pill (the <label> wrapping radio + text) */
+[data-testid="stRadio"] > div > label {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
     background: var(--cream) !important;
     border: 1px solid var(--border) !important;
     border-radius: 6px !important;
-    padding: 0.35rem 0.85rem !important;
-    font-size: 0.82rem !important;
+    padding: 0.38rem 0.9rem !important;
+    cursor: pointer !important;
+    transition: border-color 0.15s, background 0.15s !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+/* The visible text span inside the pill */
+[data-testid="stRadio"] > div > label > div,
+[data-testid="stRadio"] > div > label > span,
+[data-testid="stRadio"] > div > label p {
+    font-size: 0.85rem !important;
     font-weight: 500 !important;
     color: var(--ink) !important;
     text-transform: none !important;
     letter-spacing: 0 !important;
-    cursor: pointer !important;
-    transition: border-color 0.15s, background 0.15s !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
-.stRadio > div > label:has(input:checked) {
+/* Selected pill */
+[data-testid="stRadio"] > div > label:has(input:checked) {
     border-color: var(--maroon) !important;
-    background: rgba(127,32,32,0.06) !important;
+    background: rgba(127,32,32,0.07) !important;
+}
+[data-testid="stRadio"] > div > label:has(input:checked) > div,
+[data-testid="stRadio"] > div > label:has(input:checked) > span,
+[data-testid="stRadio"] > div > label:has(input:checked) p {
     color: var(--maroon) !important;
     font-weight: 600 !important;
+}
+
+/* ── CHECKBOX ── */
+[data-testid="stCheckbox"] > label > div,
+[data-testid="stCheckbox"] > label span,
+[data-testid="stCheckbox"] > label p {
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    color: var(--ink) !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+    opacity: 1 !important;
 }
 
 /* ── SELECT SLIDER ── */
