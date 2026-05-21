@@ -1,7 +1,10 @@
 langchain
-langchain-openai
-openai
+langchain-groq
+langchain-community
+langchain-core
+langchainhub
 streamlit
 requests
 python-dotenv
 reportlab
+groq
