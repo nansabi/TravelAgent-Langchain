@@ -32,9 +32,8 @@ def get_agent_executor():
                        search_restaurants, search_trains)
 
     from langchain_groq import ChatGroq
-    from langchain_core.prompts import PromptTemplate
-    from langchain_core.agents import create_react_agent
-    from langchain.agents import AgentExecutor
+    from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+    from langchain.agents import AgentExecutor, create_tool_calling_agent
 
     tools = [search_flights, search_hotels, search_places,
              get_weather, estimate_budget,
@@ -43,27 +42,17 @@ def get_agent_executor():
     llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0,
                    api_key=api_key)
 
-    prompt = PromptTemplate.from_template("""Answer the following questions as best you can. You have access to the following tools:
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", """You are an expert AI travel planner for India. 
+Your job is to help users plan complete trips including flights, trains, hotels, 
+places to visit, restaurants, weather, and budget breakdown.
+Always be helpful, detailed, and provide rupee costs.
+Use the tools available to gather real information before answering."""),
+        ("human", "{input}"),
+        MessagesPlaceholder(variable_name="agent_scratchpad"),
+    ])
 
-{tools}
-
-Use the following format:
-
-Question: the input question you must answer
-Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer
-Final Answer: the final answer to the original input question
-
-Begin!
-
-Question: {input}
-Thought:{agent_scratchpad}""")
-
-    agent = create_react_agent(llm, tools, prompt)
+    agent = create_tool_calling_agent(llm, tools, prompt)
 
     agent_executor = AgentExecutor(
         agent=agent,
