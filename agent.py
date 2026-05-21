@@ -38,8 +38,8 @@ def get_agent_executor():
              get_weather, estimate_budget,
              search_restaurants, search_trains]
 
-    llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0,
-                   api_key=api_key)
+    llm = ChatGroq(model="llama3-groq-70b-8192-tool-use-preview", temperature=0,
+               api_key=api_key)
 
     system_prompt = """You are an expert AI travel planner for India.
 Your job is to help users plan complete trips including flights, trains, hotels,
