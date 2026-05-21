@@ -1,6 +1,7 @@
 """
 Agent runner for the travel_agent project.
 Direct tool calling — no LLM tool-use API, zero token waste.
+Auto fallback across models on rate limit.
 """
 
 import os
@@ -41,7 +42,6 @@ def extract_trip_info(query: str) -> dict:
     travel_date = date_match.group(1) if date_match else datetime.date.today().isoformat()
 
     # Extract source and destination
-    # Pattern: "to X from Y" or "from Y to X"
     to_from = re.search(r'to\s+([a-zA-Z]+)\s+from\s+([a-zA-Z]+)', query_lower)
     from_to = re.search(r'from\s+([a-zA-Z]+)\s+to\s+([a-zA-Z]+)', query_lower)
 
@@ -55,7 +55,7 @@ def extract_trip_info(query: str) -> dict:
         source = "Delhi"
         destination = "Goa"
 
-    # Determine transport preference
+    # Transport preference
     transport = "flight"
     if any(w in query_lower for w in ["train", "railway", "rail"]):
         transport = "train"
@@ -106,7 +106,7 @@ def run_travel_agent(user_query: str) -> str:
 
         hotel_budget = int(budget * 0.4 / days)
 
-        # Step 2: Call all tools directly — no LLM tool-use
+        # Step 2: Call all tools directly
         results = {}
 
         # Flights or trains
@@ -120,10 +120,10 @@ def run_travel_agent(user_query: str) -> str:
             else:
                 results["transport"] = flight_result
 
-        results["hotels"] = search_hotels.invoke(f"{dst},{hotel_budget},{style}")
-        results["places"] = search_places.invoke(dst)
+        results["hotels"]      = search_hotels.invoke(f"{dst},{hotel_budget},{style}")
+        results["places"]      = search_places.invoke(dst)
         results["restaurants"] = search_restaurants.invoke(f"{dst},indian")
-        results["weather"] = get_weather.invoke(f"{dst},{date}")
+        results["weather"]     = get_weather.invoke(f"{dst},{date}")
 
         # Extract transport cost for budget
         transport_cost = 0
@@ -141,8 +141,8 @@ def run_travel_agent(user_query: str) -> str:
         else:
             results["budget"] = estimate_budget.invoke(f"{transport_cost},0,{hotel_cost},{days}")
 
-        # Step 3: Ask LLM to synthesize everything into a nice itinerary
-        synthesis_prompt = f"""You are an expert travel planner. Based on the data below, write a complete, 
+        # Step 3: Ask LLM to synthesize into itinerary
+        synthesis_prompt = f"""You are an expert travel planner. Based on the data below, write a complete,
 friendly {days}-day trip itinerary from {src} to {dst}.
 
 TRANSPORT: {results['transport']}
@@ -159,7 +159,7 @@ BUDGET: {results['budget']}
 
 Write a day-by-day plan using the above info. Include:
 - Transport details (flight/train)
-- Hotel recommendation  
+- Hotel recommendation
 - Day-wise activities using the places listed
 - Restaurant suggestions
 - Weather advisory
@@ -167,15 +167,48 @@ Write a day-by-day plan using the above info. Include:
 
 Keep it friendly, detailed and practical. Use rupee (₹) for all costs."""
 
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=[
-                {"role": "system", "content": "You are a friendly expert travel planner for India."},
-                {"role": "user", "content": synthesis_prompt}
-            ],
-            max_tokens=2048,
-            temperature=0.7,
-        )
+        # Try models in order until one works
+        models_to_try = [
+            "llama-3.3-70b-versatile",
+            "llama-3.1-8b-instant",
+            "gemma2-9b-it",
+        ]
+
+        response = None
+        for model in models_to_try:
+            try:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {
+                            "role": "system",
+                            "content": "You are a friendly expert travel planner for India."
+                        },
+                        {
+                            "role": "user",
+                            "content": synthesis_prompt
+                        }
+                    ],
+                    max_tokens=2048,
+                    temperature=0.7,
+                )
+                break
+            except Exception as model_err:
+                if "rate_limit" in str(model_err).lower() or "429" in str(model_err):
+                    continue
+                raise model_err
+
+        if not response:
+            return (
+                "⚠️ Rate limit reached on all models. Please try again in 30 minutes.\n\n"
+                "Meanwhile, here's what we found:\n\n"
+                f"🚀 Transport: {results['transport']}\n\n"
+                f"🏨 Hotels: {results['hotels']}\n\n"
+                f"📍 Places: {results['places']}\n\n"
+                f"🍽️ Restaurants: {results['restaurants']}\n\n"
+                f"🌤️ Weather: {results['weather']}\n\n"
+                f"💰 Budget: {results['budget']}"
+            )
 
         return response.choices[0].message.content
 
