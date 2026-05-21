@@ -1,4 +1,3 @@
-
 """
 Agent runner for the travel_agent project.
 Uses Groq LLaMA3 via LangChain ReAct agent.
@@ -8,6 +7,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 def get_api_key():
     try:
@@ -19,11 +19,12 @@ def get_api_key():
         pass
     return os.getenv("GROQ_API_KEY", "")
 
+
 def get_agent_executor():
     api_key = get_api_key()
     if not api_key:
         raise ValueError("GROQ_API_KEY not found in secrets or environment.")
-    
+
     os.environ["GROQ_API_KEY"] = api_key
 
     from tools import (search_flights, search_hotels, search_places,
@@ -31,7 +32,7 @@ def get_agent_executor():
                        search_restaurants, search_trains)
 
     from langchain_groq import ChatGroq
-    from langchain import hub
+    from langchain.prompts import PromptTemplate
     from langchain.agents import create_react_agent, AgentExecutor
 
     tools = [search_flights, search_hotels, search_places,
@@ -41,7 +42,26 @@ def get_agent_executor():
     llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0,
                    api_key=api_key)
 
-    prompt = hub.pull("hwchase17/react")
+    prompt = PromptTemplate.from_template("""Answer the following questions as best you can. You have access to the following tools:
+
+{tools}
+
+Use the following format:
+
+Question: the input question you must answer
+Thought: you should always think about what to do
+Action: the action to take, should be one of [{tool_names}]
+Action Input: the input to the action
+Observation: the result of the action
+... (this Thought/Action/Action Input/Observation can repeat N times)
+Thought: I now know the final answer
+Final Answer: the final answer to the original input question
+
+Begin!
+
+Question: {input}
+Thought:{agent_scratchpad}""")
+
     agent = create_react_agent(llm, tools, prompt)
 
     agent_executor = AgentExecutor(
