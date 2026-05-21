@@ -192,7 +192,7 @@ def run_travel_agent(user_query: str) -> str:
         # Agentic loop
         for _ in range(15):
             response = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
+                model="llama-3.1-8b-instant",
                 messages=messages,
                 tools=tools,
                 tool_choice="auto",
