@@ -10,7 +10,15 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
+
+try:
+    import streamlit as st
+    GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+except Exception:
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+
+if GROQ_API_KEY:
+    os.environ["GROQ_API_KEY"] = GROQ_API_KEY
 
 from tools import search_flights, search_hotels, search_places, get_weather, estimate_budget, search_restaurants, search_trains
 
